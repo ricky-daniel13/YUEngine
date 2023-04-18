@@ -1,0 +1,282 @@
+fileFormatVersion: 2
+guid: f5ad333ffa14ec646866a1de52efafc6
+ModelImporter:
+  serializedVersion: 21100
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ay2_candy_stand__Opacity__
+    second: {fileID: 2100000, guid: 19dbff4a31ea81d488b92909da2466fa, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_cw1_cookie01__Opacity__
+    second: {fileID: 2100000, guid: 1b5f917deadce6e46afabb4a33ce049d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_cream01__OpaOpaMul__
+    second: {fileID: 2100000, guid: 7ef04cf35817cff4992efabacab7aab4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_cream01__OpaOpa__
+    second: {fileID: 2100000, guid: d77ea1081d44a3840b4a4877613f5feb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_criff01_2__OpaOpa__
+    second: {fileID: 2100000, guid: cdc3f04cec63c314aa0ac80289ccff5d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_criff01__OpaOpaMul__
+    second: {fileID: 2100000, guid: f33d1b3775441084a8ae60ac630e1ed6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_criff01__OpaOpa__
+    second: {fileID: 2100000, guid: c9ae43caeb4485e4bbd2de6956705f1c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_criff02__OpaOpaMul__
+    second: {fileID: 2100000, guid: b2b70e9b8428f0c4890f50eebfb92628, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_criff02__OpaOpa__
+    second: {fileID: 2100000, guid: a3cd7df3f8294f1449cc5ba9edab32b2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_frame01__Opacity__
+    second: {fileID: 2100000, guid: c0d009a196eb0c647997a6cd2458121b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_lollipopa04__SpcO__
+    second: {fileID: 2100000, guid: bd13e5c15076a7b47ac7bca7d37e5689, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_lollipopb01__SpcO__
+    second: {fileID: 2100000, guid: b66b0da9e53d8da408fce687198e01c9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_jh1_lollipopc01__SpcO__
+    second: {fileID: 2100000, guid: 5cb552c84523cf74d9fac94c9432b7f6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt1_orengesteel01__RefOMask__
+    second: {fileID: 2100000, guid: cdca96475cc47ed46920b7db7576f975, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt1_orengesteel02__RefOMask__
+    second: {fileID: 2100000, guid: 1e76772b43b97e24fbc1f399a822e4c6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt1_road02__RefOMask__
+    second: {fileID: 2100000, guid: 89b2c64bf14b341429e3e705225dc79c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt1_whitesteel01_2__RefOMask__
+    second: {fileID: 2100000, guid: 95861c0965cf7414da820773fbd8d3d7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt1_whitesteel02__RefOMask__
+    second: {fileID: 2100000, guid: 6cd73b08122b0db4aa8f7202edaea663, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt3_biscuitb__Opacity__
+    second: {fileID: 2100000, guid: f6e3f8da932461f498cd56d6336d2b84, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt3_chocobar01__SpcO__
+    second: {fileID: 2100000, guid: 720610dc1142d9a4b8ed02124cb34b8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_kt3_chocobar02__Opacity__
+    second: {fileID: 2100000, guid: 0b8400041e711e04f97d20876bb76a05, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_tk1_arch01__RefOMask__
+    second: {fileID: 2100000, guid: fc3451bda3bb5f940be78351ef91ccd0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_tk1_arch02__RefOMask__
+    second: {fileID: 2100000, guid: e8953b3268de85a43ad46df14f6ada61, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_chupa01__RefO__
+    second: {fileID: 2100000, guid: bf30454b41fbefb4dbe77114dc97bfa5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_chupa02__RefO__
+    second: {fileID: 2100000, guid: 352c4db28bf25cc49bcca28f243eca44, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_chupa03__RefO__
+    second: {fileID: 2100000, guid: a5b659ce35fa70647bed89e269cbf593, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_chupa04__RefO__
+    second: {fileID: 2100000, guid: f71327b37c45c88489d19e1173e1c47b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_chupa05__RefO__
+    second: {fileID: 2100000, guid: c7a87752b642ea347a3f0a770558bddc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_mechaparts01__RefOMask__
+    second: {fileID: 2100000, guid: fc7350dac3a088d4393977ca7341cd22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_mechaparts02_2__Opacity__
+    second: {fileID: 2100000, guid: 831e8edc0eeecab49931d7790566473e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_sweet01__Opacity__
+    second: {fileID: 2100000, guid: 2787c82aade2ce64cb445e7d3901db4e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ty1_sweet02__Opacity__
+    second: {fileID: 2100000, guid: 3500d964cb6d0294680e2ace3956aa34, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ym2_licorice__Opacity__
+    second: {fileID: 2100000, guid: 16385fc90e89faa48995fb87a086f9ba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: o_ym2_oreo__Opacity__
+    second: {fileID: 2100000, guid: 3d2a45077cf7aba4da83b87c9ddb767b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: p_kt3_pocky__Punch__D__
+    second: {fileID: 2100000, guid: 0edde36e7c65d2b41a7dbbba39d2f090, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: p_ym2_cookiepop01__Punch__D__
+    second: {fileID: 2100000, guid: b19616bb78c695047a3d7bc948656503, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 0
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
