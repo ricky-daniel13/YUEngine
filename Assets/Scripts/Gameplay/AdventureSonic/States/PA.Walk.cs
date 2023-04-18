@@ -83,13 +83,29 @@ public class SonicState_Walk
         if (!trg.player.GetIsGround)
             machine.TransitionTo("Fall");
         
-        trg.player.doFriction = !(trg.input.mag > 0);
+        trg.player.doFriction = !(trg.input.mag > 0) || trg.player.GetIsControlLock;
         float rotaSpeed = trg.currPms.rotaModeSpeed / (1 + rotaDecRate * Mathf.Max(0, trg.player.InternalSpeed.magnitude - trg.currPms.rotaModeSpeedMin));
 
         if (!trg.player.GetIsControlLock)
-            if(!trg.DamTurning)
-                trg.mvm.DoInputRota(evAcc, trg.currPms.dcc, trg.currPms.topSpeed, rotaSpeed, trg.input);
-            else
-                trg.mvm.DoInputDamizean(evAcc, trg.currPms.dcc, evTang, trg.currPms.topSpeed, trg.input);
+        {
+            string currentState = trg.physState.GetStateName();
+            switch (currentState)
+            {
+                case "Loop":
+                    {
+                        trg.mvm.DoInput1Dir(evAcc, trg.currPms.dcc, trg.currPms.topSpeed, trg.input, trg.inputFrame);
+                        break;
+                    }
+                default:
+                    {
+                        if (!trg.DamTurning)
+                            trg.mvm.DoInputRota(evAcc, trg.currPms.dcc, trg.currPms.topSpeed, rotaSpeed, trg.input);
+                        else
+                            trg.mvm.DoInputDamizean(evAcc, trg.currPms.dcc, evTang, trg.currPms.topSpeed, trg.input);
+                        break;
+                    }
+            }
+            
+        }
     }
 }

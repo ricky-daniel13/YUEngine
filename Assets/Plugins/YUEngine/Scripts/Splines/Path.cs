@@ -94,7 +94,7 @@ public class Path : MonoBehaviour
 		closestTimeOnSpline = fastMode == true ? ClosestPointFast(target.position) : ClosestPoint(target.position, pathFindPrecision);
 		bezierKnot = GetKnot(closestTimeOnSpline);
 
-		Vector3 rgt, forw, up;
+		Vector3 rgt;
 
 		rgt = Extensions.ProjectDirectionOnPlane(bezierKnot.binormal, target.up);
 		//forw = Extensions.ProjectDirectionOnPlane(bezierKnot.tangent, target.up);
@@ -116,45 +116,4 @@ public class Path : MonoBehaviour
 			return target.position - (pathPosition * (atractForce * Time.deltaTime));
 		}
 	}
-
-	/*public Vector3 PutOnPath(Transform target, PutOnPathMode putOnPathMode, out BezierKnot bezierKnot, out float closestTimeOnSpline, float atractForce = 0, float binormalOffset = 0.5f)
-	{
-		closestTimeOnSpline = fastMode == true ? ClosestPointFast(target.position) : ClosestPoint(target.position, pathFindPrecision);
-		bezierKnot = GetKnot(closestTimeOnSpline);
-
-		Vector3 rgt, forw, up;
-
-		rgt = Extensions.ProjectDirectionOnPlane(bezierKnot.binormal, target.up);
-		forw = Extensions.ProjectDirectionOnPlane(bezierKnot.tangent, target.up);
-
-		up = Vector3.Cross(forw, rgt);
-
-		Quaternion rotation = Quaternion.LookRotation(forw, up);
-
-		Vector3 position = target.position;
-
-		Matrix4x4 matrix = Matrix4x4.TRS(bezierKnot.point, rotation, Vector3.one);
-
-		switch (putOnPathMode)
-		{
-			case PutOnPathMode.BinormalOnly:
-				pathPosition = rgt * (matrix.inverse.MultiplyPoint(position).x);
-				break;
-			case PutOnPathMode.NormalOnly:
-				pathPosition = up * (matrix.inverse.MultiplyPoint(position).y);
-				break;
-			case PutOnPathMode.BinormalAndNormal:
-				pathPosition = rgt * (matrix.inverse.MultiplyPoint(position).x) + up * (matrix.inverse.MultiplyPoint(position).y);
-				break;
-		}
-
-		if (atractForce <= 0)
-		{
-			return target.position - pathPosition;
-		}
-		else
-		{
-			return target.position - (pathPosition * (atractForce * Time.deltaTime));
-		}
-	}*/
 }

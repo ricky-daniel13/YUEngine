@@ -26,6 +26,7 @@ public class PlayerAdventure : MonoBehaviour
     public YUCameraControl cameraInput;
     public YUController player;
     public PlayerInput input;
+    public InputRef inputFrame;
 
     public bool DamTurning;
 

@@ -96,7 +96,8 @@ public partial class MoveMode_Loop
     // Update is called once per frame
     void Update()
     {
-        trg.input = trg.inputCont.TransformInput(YUInput.GetRefFrame(trg.loopKnot));
+        trg.inputFrame = YUInput.GetRefFrame(trg.loopKnot);
+        trg.input = trg.inputCont.TransformInput(trg.inputFrame);
     }
 
     void BeforePhys()
