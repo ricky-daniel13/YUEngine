@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Bits: 128
   acc: 12
   dcc: 112
-  frc: 10
+  frc: 18
   air: 20
   topSpeed: 35
   runSpeed: 15
@@ -28,22 +28,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.12197082
-      value: 1.5
-      inSlope: -2.927727
-      outSlope: -2.927727
-      tangentMode: 0
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.045358267
+      outWeight: 0
     - serializedVersion: 3
-      time: 0.52233887
+      time: 1
       value: 1
-      inSlope: 0.027399173
-      outSlope: 0.027399173
-      tangentMode: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0.10921663
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

@@ -27,7 +27,7 @@ public class PathTester : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(pth.PutOnPath(this.transform, YU2.Splines.PutOnPathMode.BinormalOnly, out _, out _), 0.25f);
+        Gizmos.DrawSphere(pth.PutOnPath(this.transform.position, this.transform.up, YU2.Splines.PutOnPathMode.BinormalOnly, out _, out _), 0.25f);
     }
 
     private void OnValidate()

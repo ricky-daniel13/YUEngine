@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 413057604}
-  m_IndirectSpecularColor: {r: 0.19054417, g: 0.26470023, b: 0.25629526, a: 1}
+  m_IndirectSpecularColor: {r: 0.1905439, g: 0.2646998, b: 0.25629464, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10202,7 +10202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathType: 1
-  path: {fileID: 1077300477}
+  pathHolder: {fileID: 1077300474}
   IsExit: 1
 --- !u!1 &459230156
 GameObject:
@@ -15376,6 +15376,7 @@ GameObject:
   - component: {fileID: 1077300476}
   - component: {fileID: 1077300475}
   - component: {fileID: 1077300477}
+  - component: {fileID: 1077300478}
   m_Layer: 0
   m_Name: SplineLoop
   m_TagString: Untagged
@@ -15431,6 +15432,27 @@ MonoBehaviour:
   spl: {fileID: 1077300475}
   pathFindPrecision: 0.01
   fastMode: 1
+--- !u!114 &1077300478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077300474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1fa4950f4b317a4ca9dc4c85c697304, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  is2d: 0
+  exitOnFall: 0
+  left: {fileID: 1059061783}
+  right: {fileID: 459230157}
+  path: {fileID: 1077300477}
+  forward: {x: 0, y: 0, z: 1}
+  startGround: {x: 0, y: 0.15}
+  endGround: {x: 0.78, y: 1}
+  switchPoint: 0.44
 --- !u!1 &1210017266
 GameObject:
   m_ObjectHideFlags: 0
@@ -22741,7 +22763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathType: 1
-  path: {fileID: 1077300477}
+  pathHolder: {fileID: 1077300474}
   IsExit: 0
 --- !u!1 &1675847098
 GameObject:

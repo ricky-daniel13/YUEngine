@@ -26,7 +26,7 @@ public partial class MoveMode_Loop
     private PlayerAdventure trg;
     private MonoStateMachine<PlayerAdventure> mch;
 
-    private float splineRightOffset;
+    private float splineRightPos, lastTime;
     private Vector3 splinePos, splineForw, oldSplineDir;
 
     private void OnGUI()
@@ -69,6 +69,9 @@ public partial class MoveMode_Loop
     {
         trg.currPms = trg.threeD;
         trg.actionState.DoParamChange();
+        Vector3 newPos = trg.loopPath.getPath.PutOnPath(trg.player.physBody.position, trg.transform.up, YU2.Splines.PutOnPathMode.BinormalOnly, out trg.loopKnot, out _);
+        splineRightPos = Vector3.Dot(trg.player.physBody.position - newPos, trg.loopKnot.tangent);
+        trg.player.physBody.position = newPos + (trg.loopKnot.tangent * splineRightPos);
     }
 
     void OnBuild(PlayerAdventure target, MonoStateMachine<PlayerAdventure> machine)
@@ -80,7 +83,6 @@ public partial class MoveMode_Loop
     void OnEnable()
     {
         trg.player.BeforeCol += PlayerCollision;
-        trg.player.BeforePhys += BeforePhys;
         trg.player.AfterPhys += AfterPhys;
         trg.player.BeforeUploadSpeed += BeforeUploadSpeed;
     }
@@ -88,7 +90,6 @@ public partial class MoveMode_Loop
     private void OnDisable()
     {
         trg.player.BeforeCol -= PlayerCollision;
-        trg.player.BeforePhys -= BeforePhys;
         trg.player.AfterPhys -= AfterPhys;
         trg.player.BeforeUploadSpeed -= BeforeUploadSpeed;
     }
@@ -98,11 +99,6 @@ public partial class MoveMode_Loop
     {
         trg.inputFrame = YUInput.GetRefFrame(trg.loopKnot);
         trg.input = trg.inputCont.TransformInput(trg.inputFrame);
-    }
-
-    void BeforePhys()
-    {
-        trg.player.physBody.position = trg.loopPath.PutOnPath(trg.transform, YU2.Splines.PutOnPathMode.BinormalOnly, out trg.loopKnot, out _);
     }
 
     void AfterPhys()
@@ -121,9 +117,12 @@ public partial class MoveMode_Loop
 
     void BeforeUploadSpeed()
     {
-        Vector3 projRgt = Extensions.ProjectDirectionOnPlane(trg.loopKnot.binormal, trg.transform.up);
+        SplineSpeedCorrection();
+        trg.player.physBody.position = trg.loopPath.getPath.PutOnPath(trg.transform.position-(trg.loopKnot.tangent*splineRightPos), trg.transform.up, YU2.Splines.PutOnPathMode.BinormalOnly, out trg.loopKnot, out _) + trg.loopKnot.tangent * splineRightPos;
+
+        /*Vector3 projRgt = Extensions.ProjectDirectionOnPlane(trg.loopKnot.binormal, trg.transform.up);
         float rgtSpeed = Vector3.Dot(projRgt, trg.player.InternalSpeed);
-        trg.player.InternalSpeed -= projRgt * rgtSpeed;
+        trg.player.InternalSpeed -= projRgt * rgtSpeed;*/
     }
 
     void PlayerCollision()
@@ -147,34 +146,28 @@ public partial class MoveMode_Loop
 
         trg.transform.BreakDownSpeed(trg.player.InternalSpeed, out Vector3 verticalVelocity, out Vector3 lateralVelocity);
 
-        Vector3 disDir = Vector3.Cross(trg.loopKnot.binormal, trg.player.GetGroundNormal).normalized;
-        Vector3 pastDir = Vector3.Cross(oldSplineDir, trg.player.GetGroundNormal).normalized;
+        Vector3 currDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GetGroundNormal));
+
+        Vector3 pastDir = trg.player.transform.InverseTransformDirection(oldSplineDir);
 
 
-        disDir = trg.player.transform.InverseTransformDirection(disDir);
-        pastDir = trg.player.transform.InverseTransformDirection(pastDir);
+        Vector3 rgt = Vector3.Cross(Vector3.up, trg.loopKnot.tangent).normalized;
+
+        float speedInDir = Vector3.Dot(lateralVelocity, pastDir);
 
 
-        Vector3 nRgt = -Vector3.Cross(trg.loopKnot.tangent, trg.player.GetGroundNormal).normalized;
-        nRgt = trg.player.transform.InverseTransformDirection(nRgt);
+        Vector3 splineVelocity = pastDir * speedInDir;
+        //Vector3 tangentVelocity = lateralVelocity - splineVelocity;
 
-        //Vector3 nRgt = Quaternion.LookRotation(Vector3.right) * disDir;
-        float speedInDir = lateralVelocity.magnitude;
+        float speedToRight = Vector3.Dot(rgt, lateralVelocity);
+        splineRightPos += speedToRight * Time.fixedDeltaTime;
 
+        splineVelocity = currDir * speedInDir;
 
-        Vector3 normalVelocity = pastDir * speedInDir;
-        Vector3 tangentVelocity = lateralVelocity - normalVelocity;
+        trg.player.InternalSpeed = trg.player.transform.TransformDirection(splineVelocity + verticalVelocity);
 
-        float speedToRight = Vector3.Dot(nRgt, tangentVelocity);
-
-        //splineRightOffset += speedToRight * Time.fixedDeltaTime;
-
-        normalVelocity = disDir * speedInDir;
-
-        trg.player.InternalSpeed = trg.player.transform.TransformDirection(normalVelocity + verticalVelocity);
-
-        Debug.DrawRay(splinePos + (trg.loopKnot.tangent * splineRightOffset), Vector3.up, Color.red);
-        oldSplineDir = disDir;
+        //Debug.DrawRay(splinePos + (trg.loopKnot.tangent * splineRightOffset), Vector3.up, Color.red);
+        oldSplineDir = currDir;
     }
 
 }

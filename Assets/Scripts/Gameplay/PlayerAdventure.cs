@@ -33,7 +33,7 @@ public class PlayerAdventure : MonoBehaviour
     public PAAnimator anim;
     public GameObject trail;
     public YUMovement mvm=new YUMovement();
-    public Path loopPath;
+    public PathLoop loopPath;
     public BezierKnot loopKnot;
 
     public AdventurePlayerSettings currPms;
@@ -154,10 +154,10 @@ public class PlayerAdventure : MonoBehaviour
             {
                 if (!pth.IsExit)
                 {
-                    if (pth.path != loopPath && (Vector3.Dot(other.transform.forward, player.InternalSpeed) > 0))
+                    PathLoop newPath = pth.pathHolder.GetComponent<PathLoop>(); 
+                    if (newPath != loopPath && (Vector3.Dot(other.transform.forward, player.InternalSpeed) > 0))
                     {
-                        loopPath = pth.path;
-                        transform.position = loopPath.PutOnPath(transform, YU2.Splines.PutOnPathMode.BinormalOnly, out loopKnot, out _);
+                        loopPath = newPath;
                         physState.TransitionTo("Loop");
                     }
                 }

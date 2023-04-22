@@ -91,7 +91,7 @@ public class SonicState_Walk
             string currentState = trg.physState.GetStateName();
             switch (currentState)
             {
-                case "Loop":
+                case "Loop2D":
                     {
                         trg.mvm.DoInput1Dir(evAcc, trg.currPms.dcc, trg.currPms.topSpeed, trg.input, trg.inputFrame);
                         break;

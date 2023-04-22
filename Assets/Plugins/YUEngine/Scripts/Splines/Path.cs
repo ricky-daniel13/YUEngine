@@ -89,31 +89,23 @@ public class Path : MonoBehaviour
 	}
 
 
-	public Vector3 PutOnPath(Transform target, PutOnPathMode putOnPathMode, out BezierKnot bezierKnot, out float closestTimeOnSpline, float atractForce = 15, float binormalOffset = 0.5f)
+	public Vector3 PutOnPath(Vector3 position, Vector3 normal, PutOnPathMode putOnPathMode, out BezierKnot bezierKnot, out float closestTimeOnSpline, float atractForce = 15, float binormalOffset = 0.5f)
 	{
-		closestTimeOnSpline = fastMode == true ? ClosestPointFast(target.position) : ClosestPoint(target.position, pathFindPrecision);
+		closestTimeOnSpline = fastMode == true ? ClosestPointFast(position) : ClosestPoint(position, pathFindPrecision);
 		bezierKnot = GetKnot(closestTimeOnSpline);
 
 		Vector3 rgt;
 
-		rgt = Extensions.ProjectDirectionOnPlane(bezierKnot.binormal, target.up);
+		rgt = Extensions.ProjectDirectionOnPlane(bezierKnot.binormal, normal);
 		//forw = Extensions.ProjectDirectionOnPlane(bezierKnot.tangent, target.up);
 
 		//up = Vector3.Cross(forw, rgt);
 
 		float rgtAmount = Vector3.Dot(rgt, bezierKnot.point);
 		Vector3 rgtVector = rgt * rgtAmount;
-		float rgtTrgAmount = Vector3.Dot(rgt, target.position);
-		Vector3 newPos = target.position - (rgt * rgtTrgAmount);
-		return Vector3.MoveTowards(target.position, newPos + rgtVector, (atractForce <= 0 ? Mathf.Infinity : atractForce) * Time.fixedDeltaTime);
-
-		if (atractForce <= 0)
-		{
-			return target.position - pathPosition;
-		}
-		else
-		{
-			return target.position - (pathPosition * (atractForce * Time.deltaTime));
-		}
+		float rgtTrgAmount = Vector3.Dot(rgt, position);
+		Vector3 newPos = position - (rgt * rgtTrgAmount);
+		return Vector3.MoveTowards(position, newPos + rgtVector, (atractForce <= 0 ? Mathf.Infinity : atractForce) * Time.fixedDeltaTime);
 	}
+
 }
