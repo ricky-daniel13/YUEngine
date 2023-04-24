@@ -31,6 +31,7 @@ public class PlayerAdventure : MonoBehaviour
     public bool DamTurning;
 
     public PAAnimator anim;
+    public Footsetps steps;
     public GameObject trail;
     public YUMovement mvm=new YUMovement();
     public PathLoop loopPath;
@@ -84,6 +85,7 @@ public class PlayerAdventure : MonoBehaviour
     private void OnGUI()
     {
         physState.DoOnGui();
+        GUI.Box(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15+15, 250, 75), "Controles: Stick/WASD: moverse, \nA/Espacio: Saltar, \nB/Ctrl: Rodar, \nX/Alt: Flotar");
     }
 
     private void OnDisable()
@@ -95,12 +97,20 @@ public class PlayerAdventure : MonoBehaviour
     {
         physState.DoStart();
         actionState.DoStart();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
         physState.DoUpdate();
         actionState.DoUpdate();
+
+        if (Input.GetKey(KeyCode.Escape))
+            Cursor.lockState = CursorLockMode.None;
+
+        if (Input.GetMouseButton(0))
+                Cursor.lockState = CursorLockMode.Locked;
+        
     }
 
     private void FixedUpdate()

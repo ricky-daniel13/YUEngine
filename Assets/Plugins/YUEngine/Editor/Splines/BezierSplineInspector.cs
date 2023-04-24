@@ -52,12 +52,6 @@ namespace YU2.Splines {
 			}
 		}
 
-		private void OnScene(SceneView sceneview)
-		{
-			OnSceneGUI();
-		}
-
-
 		private void OnSceneGUI()
 		{
 			spline = target as BezierSpline;

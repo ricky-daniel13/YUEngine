@@ -14,6 +14,7 @@ public class AdventurePlayerSettings : ScriptableObject
     public float acc = 10;
     public float dcc = 112, frc = 8, air = 26, topSpeed = 30, runSpeed = 20, slopeFactor = 20;
     public AnimationCurve accOverSpeed;
+    public AnimationCurve maxSpeedOverPush;
     [Header("Roll")]
     public float rollSlopeUpFactor = 17.5f;
     public float rollSlopeDownFactor = 70, rollFrc = 6, rollDcl = 28, rollStopSpeed = 1, rollRotaSpeed = 45;

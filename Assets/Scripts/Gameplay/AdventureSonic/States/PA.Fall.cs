@@ -45,6 +45,7 @@ public class SonicState_Fall
     {
         trg.anim.isGrounded = false;
         trg.player.gravityForce = trg.currPms.gravityForce;
+        trg.anim.anim.SetTrigger("toFall");
     }
 
 
@@ -57,6 +58,7 @@ public class SonicState_Fall
         if (trg.player.GetIsGround)
         {
             machine.TransitionTo("Walk");
+            trg.steps.source.PlayOneShot(trg.steps.Land);
         }
         if(!trg.player.GetIsControlLock)
             trg.mvm.DoInputDamizean(trg.currPms.air, trg.currPms.air, trg.currPms.jumpTangentDrag, Mathf.Infinity, trg.input);

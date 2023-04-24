@@ -105,6 +105,12 @@ namespace YU2
             cosSlipAngle = Extensions.DegCos(maxSlipAngle);
         }
 
+        private void Awake()
+        {
+            processAngleValues();
+            grounded = TryGround();
+        }
+
         private void Start()
         {
             processAngleValues();
@@ -184,10 +190,10 @@ namespace YU2
                         averageWallPos *= 0.5f;
                     }
                     Vector3 flatWallCol = Extensions.ProjectDirectionOnPlane(col.GetContact(i).normal, transform.up);
-                    float dotFromWall = Vector3.Dot(InternalSpeed, -flatWallCol);
+                    float speedToWall = Vector3.Dot(InternalSpeed, -flatWallCol);
                     //Debug.DrawRay(averageWallPos, col.GetContact(i).normal, Color.magenta, Time.fixedDeltaTime);
-                    if (stopOnWall && dotFromWall > 0)
-                        InternalSpeed += flatWallCol * dotFromWall;
+                    if (stopOnWall && speedToWall > 0)
+                        InternalSpeed += flatWallCol * speedToWall;
 
                     wallCount++;
 
@@ -480,7 +486,7 @@ namespace YU2
                 InternalSpeed += slopeVector * (slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
             }
             float newSpeedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
-            Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
+            //Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
             DoSlopeSlip(slopeUpDot);
         }
 
@@ -539,9 +545,9 @@ namespace YU2
         void MoveAbovePoint(Vector3 point, Vector3 normal)
         {
 
-            float yFactor = Vector3.Angle(normal, transform.up);
-            float xFactor = Vector3.Angle(normal, transform.right);
-            float zFactor = Vector3.Angle(normal, transform.forward);
+            float yFactor = Vector3.Angle(normal, physBody.rotation * Vector3.up);
+            float xFactor = Vector3.Angle(normal, physBody.rotation * Vector3.right);
+            float zFactor = Vector3.Angle(normal, physBody.rotation * Vector3.forward);
 
             yFactor = Mathf.Abs(1 - (yFactor >= 180 ? yFactor - 180 : yFactor) / 90);
             xFactor = Mathf.Abs(1 - (xFactor >= 180 ? xFactor - 180 : xFactor) / 90);
@@ -550,7 +556,7 @@ namespace YU2
 
             float fYPos = ((physShape.height / 2) * yFactor + physShape.radius * xFactor + physShape.radius * zFactor);
 
-            physBody.position = physBody.position + normal * fYPos + transform.rotation * -physShape.center;
+            physBody.position = physBody.position + normal * fYPos + physBody.rotation * -physShape.center;
         }
 
         void ClearCol()

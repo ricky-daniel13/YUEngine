@@ -175,6 +175,8 @@ namespace YU2
             joystick.x = Input.GetAxis("Horizontal");
             joystick.y = Input.GetAxis("Vertical");
 
+            //Debug.Log(joystick);
+
             if (doFakeInput)
             {
                 joystick = fakeInput;

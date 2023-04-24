@@ -6,7 +6,7 @@ public class PAAnimator : MonoBehaviour
     // Start is called before the first frame update
     public Animator anim;
     public PlayerAdventure player;
-    int idSpeed, idIsGround, idHMove, idVMove, framesToLand=0;
+    int idSpeed, idIsGround, idHMove, idVMove, idvSpeed, framesToLand=0;
     Vector3 fwr = Vector3.forward;
     Vector3 currFwr = Vector3.forward;
     Vector3 currUp = Vector3.up;
@@ -25,6 +25,7 @@ public class PAAnimator : MonoBehaviour
     void Start()
     {
         idSpeed = Animator.StringToHash("speed");
+        idvSpeed = Animator.StringToHash("verticalspeed");
         idIsGround = Animator.StringToHash("isGround");
         idHMove = Animator.StringToHash("hMove");
         idVMove = Animator.StringToHash("vMove");
@@ -33,7 +34,7 @@ public class PAAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isGrounded)
+        if (!player.player.GetIsGround)
             framesToLand--;
         else
         {
@@ -41,15 +42,17 @@ public class PAAnimator : MonoBehaviour
         }
 
         anim.SetFloat(idSpeed, player.player.InternalSpeed.magnitude);
+        anim.SetFloat(idvSpeed, Vector3.Dot(player.player.InternalSpeed, -player.player.gravityDir));
         anim.SetBool(idIsGround, framesToLand > 0);
-        if(player.player.InternalSpeed.sqrMagnitude > 0.5)
+        if(player.player.InternalSpeed.sqrMagnitude > 0.01)
         {
             if (player.player.GetIsGround)
                 fwr = player.player.InternalSpeed.normalized;
             else
             {
                 player.transform.BreakDownSpeed(player.player.InternalSpeed, out _, out Vector3 lateralVelocity);
-                if(lateralVelocity.sqrMagnitude > 0.1)
+
+                if(lateralVelocity.sqrMagnitude > 0.01)
                 fwr = lateralVelocity.normalized;
             }
         }

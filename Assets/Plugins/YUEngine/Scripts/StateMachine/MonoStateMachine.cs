@@ -88,6 +88,7 @@ namespace YU2.StateMachine
                 Debug.LogException(new System.Exception("Estado inexistente en maquina: (" + startState + ")"));
                 EditorApplication.isPlaying = false;
             }
+            isBuilt = true;
 #endif
             foreach (MonoState<T> state in states.Values)
             {
@@ -95,7 +96,6 @@ namespace YU2.StateMachine
             }
 
         currState = states[startState];
-        isBuilt = true;
         }
 
         public void DoStart()

@@ -100,10 +100,6 @@ public class YUMovement
         {
             // Fetch velocity in the Player's local frame, decompose into lateral and vertical
             // motion, and decompose lateral motion further into normal and tangential components.
-
-
-            
-
             Vector3 localSlope = transform.InverseTransformVector(player.GetSlopeVector);
             float speedInSlope = Vector3.Dot(hSpeed, localSlope);
             //hSpeed = hSpeed - (localSlope * speedInSlope);
@@ -126,9 +122,13 @@ public class YUMovement
 
             //Debug.DrawRay(transform.position, transform.TransformDirection(newDir * currSpeed), Color.green, Time.fixedDeltaTime);
 
-            if (normalSpeed < 0 && (!(canTurn)|| isBraking))
+
+
+            if (normalSpeed < 0 && ((!(canTurn))||isBraking) )
             {
-                isBraking = true;
+                Debug.Log("Is braking? " + isBraking + ",is breakspeed " + (!isBraking && currSpeed > runSpeed));
+                if (!isBraking && currSpeed > runSpeed)
+                    isBraking = true;
             }
             else
                 isBraking = false;
@@ -163,7 +163,7 @@ public class YUMovement
         }
 
         float newSpeedInUp = Vector3.Dot(player.InternalSpeed, Vector3.up);
-        Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
+        //Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
     }
 
 
