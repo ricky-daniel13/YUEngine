@@ -53,6 +53,9 @@ public class PlayerAdventure : MonoBehaviour
     public MonoStateMachine<PlayerAdventure> physState;
     public PlayerStateMachine<PlayerAdventure> actionState;
 
+    Vector3 localFacing = Vector3.forward;
+    Vector3 getGlobalFacing { get { return player.transform.TransformVector(localFacing); } }
+
     private void Awake()
     {
         actionState = new PlayerStateMachine<PlayerAdventure>(this);
@@ -120,7 +123,12 @@ public class PlayerAdventure : MonoBehaviour
 
     private void LateUpdate()
     {
-        physState.DoLateUpdate();
+        if (player.InternalSpeed.sqrMagnitude > 0.01)
+        {
+            if (player.GetIsGround)
+               localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GetGroundNormal));
+        }
+            physState.DoLateUpdate();
     }
 
     void BeforePhys()
