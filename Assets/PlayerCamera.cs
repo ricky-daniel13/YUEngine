@@ -38,11 +38,11 @@ public class PlayerCamera : MonoBehaviour
             velocity += -(cameraDirection.normalized) * (10f + Time.deltaTime);
         }
 
-        float cameraHeightToSonic = Vector3.Dot(localCameraPos, player.player.GetGroundNormal);
-        if((cameraHeightToSonic-0.8f) > Mathf.Epsilon)
-            velocity += player.player.GetGroundNormal * (Mathf.MoveTowards(cameraHeightToSonic, 0, 30));
+        //float cameraHeightToSonic = Vector3.Dot(localCameraPos, player.player.GetGroundNormal);
+        //if((cameraHeightToSonic-0.8f) > Mathf.Epsilon)
+            //velocity -= player.player.GetGroundNormal * (Mathf.MoveTowards(cameraHeightToSonic, 0, 30));
 
-        Debug.Log("Camera height difference = " + cameraHeightToSonic);
+        //Debug.Log("Camera height difference = " + cameraHeightToSonic);
 
         Quaternion idToCurr = Quaternion.LookRotation(Extensions.ProjectDirectionOnPlane(cameraHolder.forward, -player.player.gravityDir), -player.player.gravityDir);
         Vector3 desiredPosition = correctedPlayerPos  + Vector3.up * 0.8f + (idToCurr * defaultCameraRota * (Vector3.back * cameraDefaultLenght));

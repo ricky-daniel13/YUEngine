@@ -13919,6 +13919,7 @@ GameObject:
   m_Component:
   - component: {fileID: 985578220}
   - component: {fileID: 985578221}
+  - component: {fileID: 985578222}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -13948,7 +13949,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985578219}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ffe38a51148f4ab47adc5bdfea00892e, type: 3}
   m_Name: 
@@ -13959,6 +13960,30 @@ MonoBehaviour:
   cameraHolder: {fileID: 8831621485113637978}
   player: {fileID: 7792848590218606745}
   vecDefaultCameraRota: {x: 15, y: 0, z: 0}
+--- !u!114 &985578222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985578219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a93fd6f4cf5141f42ad64bd359625bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rad: 30
+  azim: 0
+  elev: 0
+  radSpeed: 0.05
+  azimSpeed: 0
+  elevSpeed: 0.2
+  defRad: 5
+  defAzim: 0
+  defElev: 1.3
+  playerOffset: {x: 0, y: 0.6, z: 0}
+  player: {fileID: 7792848590667134911}
+  cam: {fileID: 8831621485113637978}
 --- !u!1 &993944524
 GameObject:
   m_ObjectHideFlags: 0
