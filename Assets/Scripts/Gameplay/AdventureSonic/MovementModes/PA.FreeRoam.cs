@@ -106,7 +106,7 @@ public partial class MoveMode_FreeRoam
     // Update is called once per frame
     void Update()
     {
-        trg.input = trg.inputCont.TransformInput(YUInput.GetRefFrame(trg.cameraInput.transform));
+        trg.input = trg.inputCont.TransformInputSimple(YUInput.GetRefFrame(trg.cameraInput.transform));
         //stateM.DoUpdate();
     }
 

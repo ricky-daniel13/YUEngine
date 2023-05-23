@@ -4,18 +4,38 @@ using UnityEngine;
 
 public class CameraSystem : MonoBehaviour
 {
-    public float rad, azim, elev, radSpeed, azimSpeed, elevSpeed, defRad, defAzim, defElev;
-    float radVel, azimVel, elevVel;
+    public float rad, azim, elev, radSpeed, azimSpeed, elevSpeed, defRad, defAzim, defElev, lookSpeed,minAngle,fovSpeed,normalFOV,fastFov,maxAngle;
+    float radVel, azimVel, elevVel,fovVel,currFov;
     public Vector3 playerOffset;
     public Transform player, cam;
+    Camera camera;
     Matrix4x4 localMat = Matrix4x4.identity;
-    Vector3 currentUp=Vector3.up, upVel;
+    Vector3 currentUp=Vector3.up, currentDir = Vector3.up, upVel, lookVel,lastPlayerPos;
+    bool shouldMove = false;
+
+    private void Start()
+    {
+        lastPlayerPos = player.transform.position;
+        camera = cam.GetComponent<Camera>();
+        currFov = normalFOV;
+    }
     private void LateUpdate() {
         Vector3 localCamPos;
-        currentUp = Vector3.SmoothDamp(currentUp, Vector3.Angle(currentUp, player.up)  < 30 ? Vector3.up : player.up, ref upVel, 0.2f);
+
+        Vector3 playerVelocity = (player.transform.position - lastPlayerPos) / Time.deltaTime;
+        lastPlayerPos = player.transform.position;
+        float groundSpeed = Vector3.ProjectOnPlane(playerVelocity, player.up).magnitude;
+        //Debug.Log("Fov calc = " + Mathf.Max(0, groundSpeed - 12) / 12 + ", groundSpeed: " + groundSpeed);
+        currFov = Mathf.SmoothDamp(currFov, Mathf.Lerp(normalFOV, fastFov, Mathf.Max(0, groundSpeed - 12) / 12), ref fovVel, fovSpeed);
+        camera.fieldOfView = currFov;
+
+        currentUp = Vector3.SmoothDamp(currentUp, Vector3.Angle(Vector3.up, player.up)  < maxAngle ? Vector3.up : player.up, ref upVel, 0.2f);
         localMat.SetTRS(player.transform.position + playerOffset, Quaternion.FromToRotation(Vector3.up, currentUp), Vector3.one);
         localCamPos = localMat.inverse.MultiplyPoint3x4(cam.transform.position);
-        CartesianToSpherical(localCamPos, out rad, out azim, out elev);
+        Vector3 sphereCoord = Extensions.CartesianToSpherical(localCamPos);
+        rad = sphereCoord.x;
+        azim = sphereCoord.y;
+        elev = sphereCoord.z;
         
         rad = Mathf.SmoothDamp(rad, defRad, ref radVel, radSpeed);
         
@@ -23,28 +43,18 @@ public class CameraSystem : MonoBehaviour
         float elevDif = Vector3.Angle((localXzCam).normalized, (localXzCam + (Vector3.up*defElev)).normalized);
         elev = Mathf.Deg2Rad*Mathf.SmoothDampAngle(elev*Mathf.Rad2Deg, elevDif, ref elevVel, elevSpeed);
         
-        SphericalToCartesian(rad, azim, elev, out localCamPos);
+        localCamPos = Extensions.SphericalToCartesian(rad, azim, elev);
 
-        cam.transform.position = localMat.MultiplyPoint3x4(localCamPos);;
-        cam.transform.LookAt(player.transform.position + playerOffset, Vector3.up);
+        cam.transform.position = localMat.MultiplyPoint3x4(localCamPos);
+        currentDir = cam.transform.forward;
+        Vector3 toPlayerDir = ((player.transform.position + playerOffset) - cam.transform.position).normalized;
+        float angleBetweenDirs = Vector3.Angle(currentDir, toPlayerDir);
+        //Debug.Log("Angle = " + angleBetweenDirs + ", Condition one " + (!shouldMove && angleBetweenDirs > minAngle) + " Condition two " + (angleBetweenDirs > Mathf.Epsilon));
+        shouldMove = (!shouldMove && angleBetweenDirs > minAngle) || (shouldMove && angleBetweenDirs > Mathf.Epsilon);
+        Vector3 upAngle = Mathf.Abs(Vector3.Dot(toPlayerDir, Vector3.up)) > 0.9f ? player.up : Vector3.up;
+        Debug.Log("Coll check:" + Vector3.Dot(toPlayerDir, Vector3.up) + ", " + toPlayerDir.magnitude * Vector3.up.magnitude + " are they? " + Mathf.Approximately(Vector3.Dot(toPlayerDir, Vector3.up), toPlayerDir.magnitude * Vector3.up.magnitude));
+        cam.transform.rotation = Extensions.SmoothDampQuaternion(cam.transform.rotation, Quaternion.LookRotation(toPlayerDir, upAngle), ref lookVel, lookSpeed);
     }
 
-    public static void SphericalToCartesian(float radius, float polar, float elevation, out Vector3 outCart){
-        float a = radius * Mathf.Cos(elevation);
-        outCart.x = a * Mathf.Cos(polar);
-        outCart.y = radius * Mathf.Sin(elevation);
-        outCart.z = a * Mathf.Sin(polar);
-    }
-
-    public static void CartesianToSpherical(Vector3 cartCoords, out float outRadius, out float outPolar, out float outElevation){
-        if (cartCoords.x == 0)
-            cartCoords.x = Mathf.Epsilon;
-        outRadius = Mathf.Sqrt((cartCoords.x * cartCoords.x)
-                        + (cartCoords.y * cartCoords.y)
-                        + (cartCoords.z * cartCoords.z));
-        outPolar = Mathf.Atan(cartCoords.z / cartCoords.x);
-        if (cartCoords.x < 0)
-            outPolar += Mathf.PI;
-        outElevation = Mathf.Asin(cartCoords.y / outRadius);
-    }
+    
 }

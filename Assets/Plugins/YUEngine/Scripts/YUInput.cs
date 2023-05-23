@@ -160,7 +160,16 @@ namespace YU2
                 forward = Extensions.ProjectDirectionOnPlane(frameRef.up, globalUp);
             }
 
+            if (forward == Vector3.zero)
+            {
+                forward = Extensions.ProjectDirectionOnPlane(frameRef.rgt, globalUp);
+            }
+
             Vector3 right = Vector3.Cross(globalUp, forward);
+
+            Debug.DrawRay(player.transform.position + Vector3.up, forward, Color.blue);
+            Debug.DrawRay(player.transform.position + Vector3.up, right, Color.red);
+            Debug.DrawRay(player.transform.position + Vector3.up, globalUp, Color.green);
 
             builtInp.playerDir = (forward * joyInput.directionRaw.y + right * joyInput.directionRaw.x).normalized;
             builtInp.mag = joyInput.mag;

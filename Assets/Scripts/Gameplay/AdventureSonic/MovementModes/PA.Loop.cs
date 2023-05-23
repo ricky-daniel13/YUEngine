@@ -72,6 +72,7 @@ public partial class MoveMode_Loop
         Vector3 newPos = trg.loopPath.PutOnPath(trg.player.physBody.position, trg.transform.up, out trg.loopKnot, out lastTime, out pathBound);
         splineRightPos = Vector3.Dot(trg.player.physBody.position - newPos, trg.loopKnot.binormal);
         trg.player.physBody.position = newPos + (trg.loopKnot.tangent * splineRightPos);
+        trg.player.InternalSpeed = Vector3.ProjectOnPlane(trg.loopKnot.tangent, trg.player.GetGroundNormal) * 45f;
         oldSplineDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GetGroundNormal));
     }
 
