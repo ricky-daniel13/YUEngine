@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 413057604}
-  m_IndirectSpecularColor: {r: 0.19054417, g: 0.26470023, b: 0.25629526, a: 1}
+  m_IndirectSpecularColor: {r: 0.1905439, g: 0.2646998, b: 0.25629464, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -34389,6 +34389,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 491ea59f642631b4d9050f3a2f8802f8, type: 2}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: defElev
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7482506402977050399, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: m_Name
       value: SonicTest (1)

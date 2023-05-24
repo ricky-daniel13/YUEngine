@@ -38,21 +38,28 @@ public class CameraSystem : MonoBehaviour
         elev = sphereCoord.z;
         
         rad = Mathf.SmoothDamp(rad, defRad, ref radVel, radSpeed);
+
+
+
+        float targetElev = Mathf.Asin(Mathf.Max(Mathf.Min(localCamPos.y, rad-Mathf.Epsilon),-(rad-Mathf.Epsilon))/rad);
+
+        Debug.Log("targetElev: r=" + targetElev + ", a=" + Mathf.Rad2Deg*targetElev);
         
-        Vector3 localXzCam = Vector3.ProjectOnPlane(localCamPos, Vector3.up);
-        float elevDif = Vector3.Angle((localXzCam).normalized, (localXzCam + (Vector3.up*defElev)).normalized);
-        elev = Mathf.Deg2Rad*Mathf.SmoothDampAngle(elev*Mathf.Rad2Deg, elevDif, ref elevVel, elevSpeed);
+        elev = Mathf.Deg2Rad*Mathf.SmoothDampAngle(elev*Mathf.Rad2Deg, targetElev*Mathf.Rad2Deg, ref elevVel, elevSpeed);
         
+        
+
         localCamPos = Extensions.SphericalToCartesian(rad, azim, elev);
 
         cam.transform.position = localMat.MultiplyPoint3x4(localCamPos);
+        
         currentDir = cam.transform.forward;
         Vector3 toPlayerDir = ((player.transform.position + playerOffset) - cam.transform.position).normalized;
         float angleBetweenDirs = Vector3.Angle(currentDir, toPlayerDir);
-        //Debug.Log("Angle = " + angleBetweenDirs + ", Condition one " + (!shouldMove && angleBetweenDirs > minAngle) + " Condition two " + (angleBetweenDirs > Mathf.Epsilon));
+        
         shouldMove = (!shouldMove && angleBetweenDirs > minAngle) || (shouldMove && angleBetweenDirs > Mathf.Epsilon);
         Vector3 upAngle = Mathf.Abs(Vector3.Dot(toPlayerDir, Vector3.up)) > 0.9f ? player.up : Vector3.up;
-        Debug.Log("Coll check:" + Vector3.Dot(toPlayerDir, Vector3.up) + ", " + toPlayerDir.magnitude * Vector3.up.magnitude + " are they? " + Mathf.Approximately(Vector3.Dot(toPlayerDir, Vector3.up), toPlayerDir.magnitude * Vector3.up.magnitude));
+
         cam.transform.rotation = Extensions.SmoothDampQuaternion(cam.transform.rotation, Quaternion.LookRotation(toPlayerDir, upAngle), ref lookVel, lookSpeed);
     }
 
