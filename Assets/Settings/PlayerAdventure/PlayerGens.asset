@@ -17,33 +17,57 @@ MonoBehaviour:
   InteractionLayer:
     serializedVersion: 2
     m_Bits: 128
-  acc: 30
-  dcc: 112
+  acc: 13
+  dcc: 25
   frc: 8
-  air: 20
-  topSpeed: 30
+  air: 14
+  topSpeed: 70
   runSpeed: 15
   slopeFactor: 20
   accOverSpeed:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.12197082
-      value: 2
-      inSlope: -2.927727
-      outSlope: -2.927727
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxSpeedOverPush:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.4
+      value: 0.1
+      inSlope: 0.20806618
+      outSlope: 0.20806618
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.045358267
+      outWeight: 0.10915949
     - serializedVersion: 3
-      time: 0.52233887
+      time: 1
       value: 1
-      inSlope: 0.027399173
-      outSlope: 0.027399173
+      inSlope: 4.653976
+      outSlope: 4.653976
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.10921663
+      inWeight: 0.04917959
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -58,38 +82,38 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: -4.080251
-      outSlope: -4.080251
-      tangentMode: 0
+      time: 0
+      value: 2
+      inSlope: -3.3333333
+      outSlope: -3.3333333
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.04215892
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.9
-      value: 0.2
-      inSlope: -0.002697867
-      outSlope: -0.002697867
-      tangentMode: 0
+      time: 0.3
+      value: 1
+      inSlope: -3.3333333
+      outSlope: -3.3333333
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0.40953445
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   inputBehindAngle: 135
   inputBehindSlowAngle: 179
-  maxGroundSpeed: 30
-  tangentDrag: 40
+  maxGroundSpeed: 1000
+  tangentDrag: 25
   jumpTangentDrag: 16
-  rotaModeSpeed: 360
+  rotaModeSpeed: 450
   rotaModeSpeedFast: 120
   rotaModeSpeedMax: 30
   rotaModeSpeedMin: 15
-  rotaModeSpdMul: 0
+  rotaModeSpdMul: 4
   jumpForce: 17
   lowJumpSpeed: 6
   quickForce: 30
   gravityForce: 35
-  upGravityForce: 25
+  upGravityForce: 35
