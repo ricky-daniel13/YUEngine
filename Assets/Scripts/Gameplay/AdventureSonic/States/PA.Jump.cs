@@ -49,8 +49,8 @@ public class SonicState_Jump
         trg.player.gravityForce = trg.currPms.upGravityForce;
 
         trg.player.InternalSpeed += trg.player.GetGroundNormal * trg.currPms.jumpForce;
-        trg.player.physBody.position=trg.transform.position += (trg.player.GetGroundNormal) * 0.2f;
-        trg.player.physBody.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
+        trg.player.transform.position=trg.transform.position += (trg.player.GetGroundNormal) * 0.2f;
+        trg.player.transform.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
         trg.player.GetIsGround = false;
         trg.player.skipNextCol = true;
         trg.anim.anim.SetTrigger("groundToJump");

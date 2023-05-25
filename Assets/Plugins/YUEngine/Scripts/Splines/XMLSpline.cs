@@ -8,31 +8,31 @@ namespace YU2.Splines
 {
     public class XMLSpline : MonoBehaviour
     {
-        /*public TextAsset from;
+        public TextAsset from;
         public string splineName;
-        public List<BezierKnot> points;
         public float HEscale = 0.1f;
-        public SplineContainer cont;
 
 
         // Start is called before the first frame update
         [ContextMenu("ReadSplineFile")]
         public void ReadSpline()
         {
-            points = new List<BezierKnot>();
+            List<BezierCurve>  points = new List<BezierCurve>();
+            List<BezierCurve>  bnsPoints = new List<BezierCurve>();
             XmlDocument set = new XmlDocument();
             set.LoadXml(from.text);
             Debug.Log("Starting");
+            Matrix4x4 mat = Matrix4x4.identity;
             foreach (XmlElement node in set.SelectNodes("SonicPath/library/geometry"))
             {
-                //Debug.Log("id nodo:" + node.Attributes["id"].InnerText + " is equal? " + (node.Attributes["id"].InnerText == splineName).ToString());
-                Matrix4x4 mat = Matrix4x4.identity;
+                Debug.Log("id nodo:" + node.Attributes["id"].InnerText + " is equal? " + (node.Attributes["id"].InnerText == splineName).ToString());
+                
                 if (node.Attributes["id"].InnerText == splineName)
                 {
 
                     foreach (XmlElement scene in set.SelectNodes("SonicPath/scene/node"))
                     {
-                        //Debug.Log("id scena:" + scene.Attributes["id"].InnerText + " is equal to" + splineName.Substring(0, splineName.Length - 9)  + "? " + (scene.Attributes["id"].InnerText == splineName).ToString());
+                        Debug.Log("id scena:" + scene.Attributes["id"].InnerText + " is equal to" + splineName.Substring(0, splineName.Length - 9)  + "? " + (scene.Attributes["id"].InnerText == splineName).ToString());
                         if (scene.Attributes["id"].InnerText == splineName.Substring(0, splineName.Length - 9))
                         {
                             Vector3 pos, sca, rot = Vector3.zero;
@@ -54,24 +54,50 @@ namespace YU2.Splines
                     {
                         XmlNode knot = spline3D.ChildNodes[i];
                         string[] values = knot["point"].InnerText.Split(' ');
-                        float3 pos = new float3(new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale));
-
-                        values = BNSpline.ChildNodes[i]["point"].InnerText.Split(' ');
-                        float3 BNPos = new float3(new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale));
-
+                        Vector3 pos = new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale);
 
                         values = knot["invec"].InnerText.Split(' ');
-                        float3 invec = new float3(new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale)) - pos;
+                        Vector3 invec = new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale);
                         values = knot["outvec"].InnerText.Split(' ');
-                        float3 outvec = new float3(new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale)) - pos;
+                        Vector3 outvec = new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale);
 
-                        BezierKnot uniKnot = new BezierKnot(pos, invec, outvec, quaternion.identity);
+                        BezierCurve uniKnot = new BezierCurve();
+                        // = new BezierCurve(pos, invec, outvec, quaternion.identity)
+                        uniKnot.inPoint = invec;
+                        uniKnot.outPoint = outvec;
+                        uniKnot.point = pos;
+                        uniKnot.mode = BezierControlPointMode.Free;
                         points.Add(uniKnot);
+
+
+                        knot = BNSpline.ChildNodes[i];
+                        values = knot["point"].InnerText.Split(' ');
+
+                        Vector3 BnPos = new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale);
+
+                        values = knot["invec"].InnerText.Split(' ');
+                        Vector3 BnInvec = new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale);
+                        values = knot["outvec"].InnerText.Split(' ');
+                        Vector3 BnOutvec = new Vector3(-float.Parse(values[0]) * HEscale, float.Parse(values[1]) * HEscale, float.Parse(values[2]) * HEscale);
+
+                        BezierCurve bnKnot = new BezierCurve();
+                        // = new BezierCurve(pos, invec, outvec, quaternion.identity)
+                        bnKnot.inPoint = BnInvec;
+                        bnKnot.outPoint = BnOutvec;
+                        bnKnot.point = BnPos;
+                        uniKnot.mode = BezierControlPointMode.Free;
+                        bnsPoints.Add(bnKnot);
                     }
                 }
             }
 
-            cont.Spline = new Spline(points, false);
+            BezierSpline newSpline = new GameObject(splineName + "_Left").AddComponent<BezierSpline>();
+            newSpline.SetPointArray(points.ToArray(), false);
+            newSpline.transform.position = mat.GetPosition();
+
+            newSpline = new GameObject(splineName + "_Right").AddComponent<BezierSpline>();
+            newSpline.SetPointArray(bnsPoints.ToArray(), false);
+            newSpline.transform.position = mat.GetPosition();
         }
 
         // Update is called once per frame

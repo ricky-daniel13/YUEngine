@@ -46,7 +46,6 @@ public class SonicState_Walk
 
     void Begin()
     {
-        ParamChange();
         if (!trg.player.GetIsGround)
         {
             machine.TransitionTo("Fall");
@@ -54,6 +53,8 @@ public class SonicState_Walk
         }
         trg.anim.anim.SetTrigger("toGround");
         trg.mvm.isBraking = false;
+        trg.mvm.accOnDesiredDir = true;
+        ParamChange();
     }
 
     void ParamChange()

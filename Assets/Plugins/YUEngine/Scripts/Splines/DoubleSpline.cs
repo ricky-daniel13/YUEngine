@@ -35,7 +35,7 @@ namespace YU2.Splines
 		{
 			if (!left || !right)
 				return Vector3.zero;
-			Vector3 retVec = (right.GetPoint(t) - left.GetPoint(t)).normalized;
+			Vector3 retVec = (right.GetPoint(t) - GetPoint(t)).normalized;
 			Vector3 tang = GetTangent(t);
 			Vector3.OrthoNormalize(ref tang, ref retVec);
 			return retVec;

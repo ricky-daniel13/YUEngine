@@ -6,7 +6,7 @@ using UnityEditor;
 namespace YU2.Splines {
 	[CustomEditor(typeof(BezierSpline))]
 	public class BezierSplineInspector : Editor {
-		private const int stepsPerCurve = 5;
+		private const int stepsPerCurve = 3;
 
 		private const float handleSize = 0.04f;
 		private const float pickSize = 0.06f;
@@ -66,11 +66,11 @@ namespace YU2.Splines {
 				Vector3 p2 = ShowPoint(i+1, BezierKind.TangentIn);
 				Vector3 p3 = ShowPoint(i+1, BezierKind.Point);
 
-				Handles.color = Color.gray;
-				Handles.DrawLine(p0, p1);
-				Handles.DrawLine(p2, p3);
+				//Handles.color = Color.gray;
+				//Handles.DrawLine(p0, p1);
+				//Handles.DrawLine(p2, p3);
 
-				ShowDirections();
+				//ShowDirections();
 				Handles.DrawBezier(p0, p3, p1, p2, Color.white, null, 2f);
 				p0 = p3;
 			}
@@ -125,6 +125,8 @@ namespace YU2.Splines {
 			Vector3 point;
 
 			point = handleTransform.TransformPoint(spline.GetControlPoint(index,kind));
+			if(!spline.GetEditable())
+				return point;
 
 			float size = HandleUtility.GetHandleSize(point);
 			Handles.color = modeColors[(int)spline.GetControlPointMode(index)];

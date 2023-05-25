@@ -44,7 +44,7 @@ public class DummyAnimator : MonoBehaviour
         anim.SetBool(idIsRoll, false);
         anim.SetBool(idIsJump, false);
         anim.SetBool(idIsGround, framesToLand > 0);
-        if (player.player.physBody.velocity.sqrMagnitude > 0.5)
+        /*if (player.player.physBody.velocity.sqrMagnitude > 0.5)
         {
             if (player.player.GetIsGround)
                 fwr = player.player.physBody.velocity.normalized;
@@ -58,10 +58,12 @@ public class DummyAnimator : MonoBehaviour
         else
         {
             fwr = Vector3.ProjectOnPlane(currFwr, player.transform.up).normalized;
-        }
+        }*/
+
+        fwr = player.getGlobalFacing;
 
         if (Vector3.Dot(currFwr, fwr) > 0)
-            currFwr = Vector3.SmoothDamp(currFwr, fwr, ref fwrVsc, faceSpeed).normalized;
+            currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);
         else
             currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);
         currUp = Vector3.SmoothDamp(currUp, player.transform.up, ref vscUp, slopeRotaSpeed);

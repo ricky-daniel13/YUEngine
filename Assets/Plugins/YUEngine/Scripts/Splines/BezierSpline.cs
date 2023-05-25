@@ -10,6 +10,8 @@ namespace YU2.Splines
 		[SerializeField]
 		private BezierCurve[] points;
 		private bool loop;
+		[SerializeField]
+		private bool editable = true;
 		public bool Loop
 		{
 			get
@@ -37,9 +39,15 @@ namespace YU2.Splines
 			}
 		}
 
-		public void SetPointArray(BezierCurve[] points)
+		public void SetPointArray(BezierCurve[] points, bool isEditable = true)
         {
 			this.points = points;
+			this.editable = isEditable;
+        }
+
+		public bool GetEditable()
+        {
+			return editable;
         }
 
 		public Vector3 GetControlPoint(int index, BezierKind kind)

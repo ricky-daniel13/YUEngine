@@ -7,7 +7,7 @@ namespace YU2.Splines {
 	[CustomEditor(typeof(DoubleSpline))]
 	public class DoubleSplineInspector : Editor
     {
-		private const int stepsPerCurve = 5;
+		private const int stepsPerCurve = 2;
 		private const float directionScale = 0.25f;
 		// Start is called before the first frame update
 
@@ -25,9 +25,7 @@ namespace YU2.Splines {
 				Vector3 point = spline.GetPoint(i / (float)steps);
 				Handles.color = Color.gray;
 				Handles.DrawLine(spline.left.GetPoint(i / (float)steps), spline.right.GetPoint(i / (float)steps));
-				/*Handles.color = Color.green;
-				point = spline.GetPoint(i / (float)steps);
-				Handles.DrawLine(point, point + spline.GetNormal(i / (float)steps) );*/
+
 
 				Handles.color = Color.blue;
 				Handles.DrawLine(point, point + spline.GetTangent(i / (float)steps) * directionScale);

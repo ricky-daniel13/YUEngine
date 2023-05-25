@@ -34,8 +34,17 @@ namespace YU2
         public float slopeFactor=20, maxGroundSpeed=80, airDragLimit=6, airDragHrLimit = 0.46875f, drag = 0.0625f, controlLockTimer, airToGroundSpeedMultiplier=1;
         public bool slopeSpeedAdjust, doControlLock, doFriction=true, doAirDrag = true, doGravity=true, doPhysics=true, doSpeedUpload=true, gravBasedSlope=false;
         [Header("Collision")]
+        [Tooltip("El angulo maximo que puede tener una superficie antes de dejar de ser suelo")]
         public float maxAngle = 50;
-        public float maxStandAngle=10, maxCeiAngle=140, maxSlipAngle=40, slipSpeedLimit=10, tryGroundDistance=0.5f;
+        [Tooltip("El angulo minimo que puede tener una superficie para ser techo")]
+        public float maxCeiAngle = 140;
+        [Tooltip("El angulo maximo en el que Sonic puede pararse sin que lo arrastre la pendiente")]
+        public float maxStandAngle = 10;
+        [Tooltip("Angulo maximo al que Sonic puede pararse en una superficie sin ir corriendo")]
+        public float maxSlipAngle = 40;
+        [Tooltip("Velocidad minima antes de que Sonic se suelte de una superficie arriba del maximo")]
+        public float slipSpeedLimit = 10;
+        public float tryGroundDistance = 0.5f;
         public GroundNormalType groundMethod;
         public LayerMask groundLayer, movingLayer;
         public bool stopOnCeil, stopOnWall;
@@ -131,7 +140,6 @@ namespace YU2
                         averageFloorNor = Vector3.zero;
                         averageFloorPos = Vector3.zero;
                     }
-
                     averageFloorNor += col.GetContact(i).normal;
                     averageFloorPos += col.GetContact(i).point;
                     if (colCount > 0)
@@ -142,16 +150,12 @@ namespace YU2
 
                     if (movingLayer.Contains(col.gameObject.layer))
                     {
-                        /*if (prevConnBody == null)
-                            Debug.Log("Landed on plat");*/
                         connBody = col.rigidbody;
                     }
 
-                    if (OnFloorCol != null)
-                        OnFloorCol(col.GetContact(i).normal, col.GetContact(i).point);
+                    OnFloorCol?.Invoke(col.GetContact(i).normal, col.GetContact(i).point);
 
                     colCount++;
-                    //Debug.DrawRay(col.GetContact(i).point, col.GetContact(i).normal, Color.blue, Time.fixedDeltaTime);
                 }
                 else if (Vector3.Dot(transform.up, col.GetContact(i).normal.normalized) < cosMaxCei)
                 {
@@ -169,8 +173,7 @@ namespace YU2
                         averageCeiPos *= 0.5f;
                     }
 
-                    if (OnCeilingCol != null)
-                        OnCeilingCol(col.GetContact(i).normal, col.GetContact(i).point);
+                    OnCeilingCol?.Invoke(col.GetContact(i).normal, col.GetContact(i).point);
 
                     ceilCount++;
                 }
@@ -197,8 +200,7 @@ namespace YU2
 
                     wallCount++;
 
-                    if (OnWallCol != null)
-                        OnWallCol(col.GetContact(i).normal, col.GetContact(i).point);
+                    OnWallCol?.Invoke(col.GetContact(i).normal, col.GetContact(i).point);
                 }
             }
 
@@ -235,7 +237,7 @@ namespace YU2
             if (doSpeedUpload)
                 physBody.velocity = InternalSpeed;
             if(connBody)
-                physBody.position+=connDiff;
+                transform.position+=connDiff;
             AfterUploadSpeed?.Invoke();
             ResetCol();
 
@@ -262,10 +264,6 @@ namespace YU2
                 else if (grounded)
                     willGround = TryGround();
             }
-
-            //Debug.DrawRay(transform.position, oldNormal, Color.blue, Time.fixedDeltaTime);
-            //Debug.DrawRay(transform.position, averageFloorNor, Color.green, Time.fixedDeltaTime);
-
             if(willGround && grounded)
             {
                 if (slopeSpeedAdjust)
@@ -288,13 +286,6 @@ namespace YU2
                 {
                     controlLockTimer -= Time.fixedDeltaTime;
                 }
-
-                /*if (slopeSpeedAdjust)
-                {
-                    InternalSpeed = transform.TransformDirection(hSpeed + vSpeed);
-                }*/
-
-
             }
             else
             {
@@ -344,7 +335,7 @@ namespace YU2
                 {
                     connDiff = connBody.transform.TransformPoint(connLocalPos) - connWorldPos;
                 }
-                connWorldPos = physBody.position;
+                connWorldPos = transform.position;
                 connLocalPos = connBody.transform.InverseTransformPoint(connWorldPos);
             }
         }
@@ -398,7 +389,7 @@ namespace YU2
                         connBody = hit.rigidbody;
                     }
 
-                    physBody.position=transform.position+projectionVector;
+                    transform.position=transform.position+projectionVector;
                 }
             }
         }
@@ -425,7 +416,7 @@ namespace YU2
                         connBody = hit.rigidbody;
                     }
 
-                    physBody.position = physBody.position - (transform.up * (hit.distance - 0.25f));
+                    transform.position = transform.position - (transform.up * (hit.distance - 0.25f));
                     return true;
                 }
                 /*else
@@ -500,7 +491,7 @@ namespace YU2
                 controlLockTimer = 0.7f;
                 if (slopeUpDot < cosMaxAngle)
                 {
-                    physBody.rotation = Quaternion.FromToRotation(Vector3.up, -gravityDir);
+                    transform.rotation = Quaternion.FromToRotation(Vector3.up, -gravityDir);
                     oldNormal = -gravityDir;
                     MoveAbovePoint(averageFloorPos, averageFloorNor);
                 }
@@ -545,9 +536,9 @@ namespace YU2
         void MoveAbovePoint(Vector3 point, Vector3 normal)
         {
 
-            float yFactor = Vector3.Angle(normal, physBody.rotation * Vector3.up);
-            float xFactor = Vector3.Angle(normal, physBody.rotation * Vector3.right);
-            float zFactor = Vector3.Angle(normal, physBody.rotation * Vector3.forward);
+            float yFactor = Vector3.Angle(normal, transform.rotation * Vector3.up);
+            float xFactor = Vector3.Angle(normal, transform.rotation * Vector3.right);
+            float zFactor = Vector3.Angle(normal, transform.rotation * Vector3.forward);
 
             yFactor = Mathf.Abs(1 - (yFactor >= 180 ? yFactor - 180 : yFactor) / 90);
             xFactor = Mathf.Abs(1 - (xFactor >= 180 ? xFactor - 180 : xFactor) / 90);
@@ -556,7 +547,7 @@ namespace YU2
 
             float fYPos = ((physShape.height / 2) * yFactor + physShape.radius * xFactor + physShape.radius * zFactor);
 
-            physBody.position = physBody.position + normal * fYPos + physBody.rotation * -physShape.center;
+            transform.position = transform.position + normal * fYPos + transform.rotation * -physShape.center;
         }
 
         void ClearCol()

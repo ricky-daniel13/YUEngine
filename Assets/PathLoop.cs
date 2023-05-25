@@ -29,6 +29,7 @@ public class PathLoop : MonoBehaviour
     public Vector2 getEnd { get { return endGround; } }
 
     public float getSwitch { get { return switchPoint; } }
+    public float pathSpeed, pathTest = 0;
     // Update is called once per frame
     private void OnDrawGizmosSelected() {
         if(path == null)
@@ -42,8 +43,14 @@ public class PathLoop : MonoBehaviour
         Gizmos.DrawSphere(path.spl.GetPoint(endGround.x), 0.25f);
         Gizmos.DrawSphere(path.spl.GetPoint(endGround.y), 0.25f);
 
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(path.spl.GetPoint(switchPoint), 0.25f);
+        Gizmos.color = Color.black;
+        Gizmos.DrawSphere(path.spl.GetPoint(pathTest), 0.25f);
+        Gizmos.DrawRay(path.spl.GetPoint(pathTest), path.spl.GetTangent(pathTest) *2);
+    }
+
+    private void Update()
+    {
+        pathTest += pathSpeed * Time.deltaTime;
     }
 
     public Vector3 PutOnPath(Vector3 position, Vector3 normal, out BezierKnot bezierKnot, out float closestTimeOnSpline, out float pathBound, float startSearch = 0, float endSearch = 1)

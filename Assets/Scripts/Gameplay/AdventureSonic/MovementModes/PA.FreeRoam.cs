@@ -125,7 +125,7 @@ public partial class MoveMode_FreeRoam
             trg.player.InternalSpeed -= speedUp;
             trg.player.InternalSpeed += -trg.player.gravityDir * trg.currPms.jumpForce;
             trg.player.controlLockTimer = -1f;
-            trg.player.physBody.position = trg.transform.position + (trg.player.GetGroundNormal * 0.1f);
+            trg.player.transform.position = trg.transform.position + (trg.player.GetGroundNormal * 0.1f);
             trg.player.GetIsGround = false;
             trg.player.skipNextCol = true;
         }

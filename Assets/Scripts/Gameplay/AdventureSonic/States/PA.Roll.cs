@@ -82,9 +82,8 @@ public class SonicState_Roll
         if (Input.GetButtonDown("Jump") && trg.player.GetIsGround && !isJumping)
         {
             trg.player.InternalSpeed += trg.player.GetGroundNormal * trg.currPms.jumpForce;
-            trg.player.physBody.position = trg.transform.position += (trg.player.GetGroundNormal) * 0.2f;
-            trg.player.physBody.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
-            //Debug.Log("Jump! + floornor" + player.GetGroundNormal);
+            trg.player.transform.position = trg.transform.position += (trg.player.GetGroundNormal) * 0.2f;
+            trg.player.transform.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
             trg.player.GetIsGround = false;
             isJumping = true;
             trg.player.skipNextCol = true;
@@ -94,12 +93,12 @@ public class SonicState_Roll
 
     void BeforePhys()
     {
-
         float slopeUpDot = Vector3.Dot(trg.transform.up, trg.player.GetGroundNormal);
         if ((trg.player.InternalSpeed.magnitude < trg.currPms.rollStopSpeed && slopeUpDot > Extensions.DegCos(trg.player.maxStandAngle)) && (trg.player.GetIsGround))
         {
             machine.TransitionTo("Walk");
             trg.steps.source.PlayOneShot(trg.steps.Land);
+            return;
         }
 
         if (trg.player.GetIsGround)

@@ -9,7 +9,7 @@ public class YUMovement
     public Transform transform;
 
     public float rotaDecelFactor = 10;
-    public bool accOnDesiredDir = false, isBraking;
+    public bool accOnDesiredDir = true, isBraking;
     public float brakeAngle;
     public float runSpeed;
 
@@ -93,20 +93,12 @@ public class YUMovement
 
         Vector3 inputDir = transform.InverseTransformDirection(input.playerDir);
         transform.BreakDownSpeed(player.InternalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
-        Vector3 localUp = transform.InverseTransformVector(Vector3.up);
-        float speedInUp = Vector3.Dot(hSpeed, localUp);
 
         if (input.mag != 0)
         {
             // Fetch velocity in the Player's local frame, decompose into lateral and vertical
             // motion, and decompose lateral motion further into normal and tangential components.
-            Vector3 localSlope = transform.InverseTransformVector(player.GetSlopeVector);
-            float speedInSlope = Vector3.Dot(hSpeed, localSlope);
-            //hSpeed = hSpeed - (localSlope * speedInSlope);
-
-           
-            Debug.DrawRay(transform.position, transform.TransformDirection(localSlope * speedInSlope), Color.black, Time.fixedDeltaTime);
-            Debug.DrawRay(transform.position, transform.TransformDirection(hSpeed), Color.blue, Time.fixedDeltaTime);
+            Debug.DrawRay(transform.position, transform.TransformDirection(inputDir), Color.black, Time.fixedDeltaTime);
 
             float normalSpeed = Vector3.Dot(hSpeed, inputDir);
             float dirDif = Vector3.Dot(hSpeed.normalized, inputDir);
@@ -120,13 +112,9 @@ public class YUMovement
 
             currSpeed -= Mathf.Abs((currSpeed - Vector3.Dot(newDir, hSpeed))) * rotaDecelFactor;
 
-            //Debug.DrawRay(transform.position, transform.TransformDirection(newDir * currSpeed), Color.green, Time.fixedDeltaTime);
-
-
-
             if (normalSpeed < 0 && ((!(canTurn))||isBraking) )
             {
-                Debug.Log("Is braking? " + isBraking + ",is breakspeed " + (!isBraking && currSpeed > runSpeed));
+                //Debug.Log("Is braking? " + isBraking + ",is breakspeed " + (!isBraking && currSpeed > runSpeed));
                 if (!isBraking && currSpeed > runSpeed)
                     isBraking = true;
             }
@@ -154,12 +142,12 @@ public class YUMovement
             //Debug.DrawRay(transform.position, transform.TransformDirection(newDir), Color.green, Time.fixedDeltaTime);
             //Debug.DrawRay(transform.position, transform.TransformDirection(toRota * Vector3.forward), (canTurn) ? Color.blue : Color.red, Time.fixedDeltaTime);
             //Debug.DrawRay(transform.position, transform.TransformDirection(localSlope * speedInSlope), Color.black, Time.fixedDeltaTime);
-            Debug.DrawRay(transform.position, transform.TransformDirection(hSpeed), Color.green, Time.fixedDeltaTime);
+            //Debug.DrawRay(transform.position, transform.TransformDirection(hSpeed), Color.green, Time.fixedDeltaTime);
 
 
             player.InternalSpeed = transform.TransformDirection(hSpeed + vSpeed);
 
-            Debug.DrawRay(transform.position, player.InternalSpeed, Color.red, Time.fixedDeltaTime);
+            //Debug.DrawRay(transform.position, player.InternalSpeed, Color.red, Time.fixedDeltaTime);
         }
 
         float newSpeedInUp = Vector3.Dot(player.InternalSpeed, Vector3.up);

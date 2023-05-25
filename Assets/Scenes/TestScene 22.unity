@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 413057604}
-  m_IndirectSpecularColor: {r: 0.1905439, g: 0.2646998, b: 0.25629464, a: 1}
+  m_IndirectSpecularColor: {r: 0.19054417, g: 0.26470023, b: 0.25629526, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10090,6 +10090,7 @@ MonoBehaviour:
     inPoint: {x: 10.880203, y: -0.009754896, z: 7.929497}
     outPoint: {x: 12.127427, y: 4.997981, z: 7.483216}
     mode: 1
+  editable: 1
 --- !u!4 &459230158
 Transform:
   m_ObjectHideFlags: 0
@@ -13774,6 +13775,8 @@ MonoBehaviour:
   startGround: {x: 0, y: 1}
   endGround: {x: 0, y: 1}
   switchPoint: 0.5
+  pathSpeed: 0
+  pathTest: 0
 --- !u!114 &993944526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13826,6 +13829,7 @@ MonoBehaviour:
     inPoint: {x: -53.420364, y: 0, z: -26.618553}
     outPoint: {x: -53.420364, y: 0, z: -15.647223}
     mode: 1
+  editable: 1
 --- !u!4 &993944528
 Transform:
   m_ObjectHideFlags: 0
@@ -14668,6 +14672,7 @@ MonoBehaviour:
     inPoint: {x: 10.880203, y: -0.009754896, z: 7.929497}
     outPoint: {x: 12.127427, y: 4.997981, z: 7.483216}
     mode: 1
+  editable: 1
 --- !u!4 &1059061784
 Transform:
   m_ObjectHideFlags: 0
@@ -15041,6 +15046,8 @@ MonoBehaviour:
   startGround: {x: 0, y: 0.12}
   endGround: {x: 0.78, y: 1}
   switchPoint: 0.44
+  pathSpeed: 0
+  pathTest: 0
 --- !u!1 &1210017266
 GameObject:
   m_ObjectHideFlags: 0
@@ -34391,7 +34398,31 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 491ea59f642631b4d9050f3a2f8802f8, type: 2}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: defElev
-      value: 0.5
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: fovFast
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: maxAngle
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: elevSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: fovNormal
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: angleSpeed
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: playerOffset
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7482506402977050399, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: m_Name
