@@ -1,5 +1,5 @@
 /*H**********************************************************************
-* FILENAME :        PlayerAdventure.FreeRoam.cs             DESIGN REF: ---
+* FILENAME :        PlayerAdventure.cs             DESIGN REF: ---
 *
 * DESCRIPTION :
 *       Base class for the PlayerAdventure code. Runs the state machine
@@ -9,6 +9,7 @@
 
 * CHANGES :
 *   15 Apr 2023:    Added Loop State.
+
 * 
 *H*/
 
@@ -51,19 +52,19 @@ public class PlayerAdventure : MonoBehaviour
 
 
     public MonoStateMachine<PlayerAdventure> physState;
-    public PlayerStateMachine<PlayerAdventure> actionState;
+    public PlayerStateMachine<PlayerAdventure> moveState;
 
     Vector3 localFacing = Vector3.forward;
     public Vector3 getGlobalFacing { get { return player.transform.TransformVector(localFacing); } }
 
     private void Awake()
     {
-        actionState = new PlayerStateMachine<PlayerAdventure>(this);
-        actionState.AddStartState(stateWalk.GetState());
-        actionState.AddState(stateRoll.GetState());
-        actionState.AddState(stateFall.GetState());
-        actionState.AddState(stateJump.GetState());
-        actionState.Build();
+        moveState = new PlayerStateMachine<PlayerAdventure>(this);
+        moveState.AddStartState(stateWalk.GetState());
+        moveState.AddState(stateRoll.GetState());
+        moveState.AddState(stateFall.GetState());
+        moveState.AddState(stateJump.GetState());
+        moveState.Build();
 
         physState = new MonoStateMachine<PlayerAdventure>(this);
         physState.AddStartState(frState.GetState());
@@ -99,14 +100,14 @@ public class PlayerAdventure : MonoBehaviour
     private void Start()
     {
         physState.DoStart();
-        actionState.DoStart();
+        moveState.DoStart();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
         physState.DoUpdate();
-        actionState.DoUpdate();
+        moveState.DoUpdate();
 
         if (Input.GetKey(KeyCode.Escape))
             Cursor.lockState = CursorLockMode.None;
@@ -133,12 +134,12 @@ public class PlayerAdventure : MonoBehaviour
 
     void BeforePhys()
     {
-        actionState.DoBeforePhys();
+        moveState.DoBeforePhys();
     }
 
     void AfterPhys()
     {
-        actionState.DoAfterPhys();
+        moveState.DoAfterPhys();
 
         if (Input.GetButton("Fly"))
         {
@@ -154,13 +155,13 @@ public class PlayerAdventure : MonoBehaviour
 
     void BeforeUploadSpeed()
     {
-        actionState.DoAfterPhys();
+        moveState.DoAfterPhys();
     }
 
     void PlayerCollision()
     {
         player.tryGroundDistance = player.physBody.velocity.magnitude < currPms.runSpeed ? currPms.tryGroundDistance : currPms.tryGroundDistanceFast;
-        actionState.DoBeforeCol();
+        moveState.DoBeforeCol();
     }
 
     private void OnTriggerEnter(Collider other)

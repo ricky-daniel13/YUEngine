@@ -21,7 +21,7 @@ using YU2.StateMachine;
 
 
 [System.Serializable]
-public partial class MoveMode_FreeRoam
+public class MoveMode_FreeRoam
 {
     private PlayerAdventure trg;
     private MonoStateMachine<PlayerAdventure> mch;
@@ -37,7 +37,7 @@ public partial class MoveMode_FreeRoam
         float dirDif = Vector3.Dot(hSpeed.normalized, inputDir);
 
         // Make a background box
-        GUI.Box(new Rect(10, 10, 250, 250), "Sonic data: \tState: " + trg.actionState.currentState);
+        GUI.Box(new Rect(10, 10, 250, 250), "Sonic data: \tState: " + trg.moveState.currentState);
 
         GUI.Label(new Rect(15, 25, 250, 100), "isGrounded =" + trg.player.GetIsGround);
         GUI.Label(new Rect(15, 25 + 15, 250, 100), "position =" + trg.transform.position);
@@ -68,7 +68,7 @@ public partial class MoveMode_FreeRoam
     void OnEnterState()
     {
         trg.currPms = trg.threeD;
-        trg.actionState.DoParamChange();
+        trg.moveState.DoParamChange();
     }
 
     void OnBuild(PlayerAdventure target, MonoStateMachine<PlayerAdventure> machine)

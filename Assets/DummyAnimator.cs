@@ -62,11 +62,13 @@ public class DummyAnimator : MonoBehaviour
 
         fwr = player.getGlobalFacing;
 
-        if (Vector3.Dot(currFwr, fwr) > 0)
-            currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);
-        else
-            currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);
         currUp = Vector3.SmoothDamp(currUp, player.transform.up, ref vscUp, slopeRotaSpeed);
+
+        if (Vector3.Dot(currFwr, fwr) > 0)
+            currFwr = Extensions.ProjectDirectionOnPlane(Vector3.RotateTowards(currFwr, fwr, faceSpeed * Time.deltaTime, 0), currUp);
+        else
+            currFwr = Extensions.ProjectDirectionOnPlane(Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0), currUp);
+        
 
         transform.position = player.transform.position;
         transform.rotation = Quaternion.LookRotation(currFwr, currUp);

@@ -18,10 +18,7 @@ namespace YU2.StateMachine
 #if UNITY_EDITOR
         private bool isBuilt = false;
 #endif
-        public string GetStateName()
-        {
-            return currState.stateName;
-        }
+        public string StateName => currState.stateName;
 
         public void DoUpdate()
         {

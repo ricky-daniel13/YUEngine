@@ -315,8 +315,8 @@ MonoBehaviour:
   doSpeedUpload: 1
   gravBasedSlope: 0
   maxAngle: 50
-  maxStandAngle: 10
   maxCeiAngle: 140
+  maxStandAngle: 10
   maxSlipAngle: 30
   slipSpeedLimit: 5
   tryGroundDistance: 0.5
@@ -715,23 +715,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93fd6f4cf5141f42ad64bd359625bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rad: 30
-  azim: 0
-  elev: 0
   radSpeed: 0.05
   azimSpeed: 0
-  elevSpeed: 0.1
+  elevSpeed: 0.08
   defRad: 5
   defAzim: 0
-  defElev: 1.2
+  defElev: 0.8
   lookSpeed: 0.05
-  minAngle: 0
-  fovSpeed: 0.1
-  normalFOV: 50
-  fastFov: 65
-  playerOffset: {x: 0, y: 0.8, z: 0}
-  player: {fileID: 840985545606652736}
-  cam: {fileID: 1915301887404134223}
+  fovSpeed: 0.2
+  fovNormal: 45
+  fovFast: 65
+  maxAngle: 10
+  angleSpeed: 0.2
+  playerOffset: 1
+  minRunSpeed: 12
+  maxRunSpeed: 23
+  player: {fileID: 874118998128462732}
+  cam: {fileID: 1915301887404134216}
 --- !u!1 &6918861747101164541
 GameObject:
   m_ObjectHideFlags: 0

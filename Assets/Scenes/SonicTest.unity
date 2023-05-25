@@ -1075,6 +1075,7 @@ MonoBehaviour:
     inPoint: {x: 55.620358, y: -23.257483, z: 117.99661}
     outPoint: {x: 57.52767, y: -24.378841, z: 123.157745}
     mode: 1
+  editable: 1
 --- !u!1 &274015301
 GameObject:
   m_ObjectHideFlags: 0
@@ -9384,6 +9385,8 @@ MonoBehaviour:
   startGround: {x: 0, y: 1}
   endGround: {x: 0, y: 1}
   switchPoint: 0.5
+  pathSpeed: 0
+  pathTest: 0
 --- !u!114 &763178014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15989,16 +15992,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 491ea59f642631b4d9050f3a2f8802f8, type: 2}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
-      propertyPath: defRad
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
-      propertyPath: defElev
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
-      propertyPath: maxAngle
-      value: 15
+      propertyPath: minMaxSpeed
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7482506402977050399, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: m_Name
@@ -16170,6 +16165,7 @@ MonoBehaviour:
     inPoint: {x: 59.278225, y: -25.270853, z: 122.420654}
     outPoint: {x: 61.690044, y: -26.375284, z: 127.5765}
     mode: 1
+  editable: 1
 --- !u!4 &1006049140
 Transform:
   m_ObjectHideFlags: 0

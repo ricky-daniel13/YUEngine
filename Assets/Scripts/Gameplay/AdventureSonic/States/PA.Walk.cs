@@ -108,7 +108,7 @@ public class SonicState_Walk
 
         if (!trg.player.GetIsControlLock)
         {
-            string currentState = trg.physState.GetStateName();
+            string currentState = trg.physState.StateName;
             switch (currentState)
             {
                 case "Loop2D":

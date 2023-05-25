@@ -21,6 +21,8 @@ namespace YU2.StateMachine
 
         public string currentState { get { return currState.stateName; } }
 
+        public string StateName => currState.stateName;
+
         public void DoUpdate()
         {
             currState.Update?.Invoke();
