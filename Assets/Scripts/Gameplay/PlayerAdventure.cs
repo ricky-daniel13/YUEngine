@@ -51,25 +51,25 @@ public class PlayerAdventure : MonoBehaviour
     SonicState_Roll stateRoll = new SonicState_Roll();
 
 
-    public MonoStateMachine<PlayerAdventure> physState;
-    public PlayerStateMachine<PlayerAdventure> moveState;
+    public MonoStateMachine<PlayerAdventure> moveState;
+    public PlayerStateMachine<PlayerAdventure> actionState;
 
     Vector3 localFacing = Vector3.forward;
     public Vector3 getGlobalFacing { get { return player.transform.TransformVector(localFacing); } }
 
     private void Awake()
     {
-        moveState = new PlayerStateMachine<PlayerAdventure>(this);
-        moveState.AddStartState(stateWalk.GetState());
-        moveState.AddState(stateRoll.GetState());
-        moveState.AddState(stateFall.GetState());
-        moveState.AddState(stateJump.GetState());
-        moveState.Build();
+        actionState = new PlayerStateMachine<PlayerAdventure>(this);
+        actionState.AddStartState(stateWalk.GetState());
+        actionState.AddState(stateRoll.GetState());
+        actionState.AddState(stateFall.GetState());
+        actionState.AddState(stateJump.GetState());
+        actionState.Build();
 
-        physState = new MonoStateMachine<PlayerAdventure>(this);
-        physState.AddStartState(frState.GetState());
-        physState.AddState(lpState.GetState());
-        physState.Build();
+        moveState = new MonoStateMachine<PlayerAdventure>(this);
+        moveState.AddStartState(frState.GetState());
+        moveState.AddState(lpState.GetState());
+        moveState.Build();
 
         mvm.player = player;
         mvm.transform = transform;
@@ -77,7 +77,7 @@ public class PlayerAdventure : MonoBehaviour
 
     private void OnEnable()
     {
-        physState.DoOnEnable();
+        moveState.DoOnEnable();
 
         player.BeforeCol += PlayerCollision;
         player.BeforePhys += BeforePhys;
@@ -88,26 +88,26 @@ public class PlayerAdventure : MonoBehaviour
 
     private void OnGUI()
     {
-        physState.DoOnGui();
+        moveState.DoOnGui();
         GUI.Box(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15+15, 250, 75), "Controles: Stick/WASD: moverse, \nA/Espacio: Saltar, \nB/Ctrl: Rodar, \nX/Alt: Flotar");
     }
 
     private void OnDisable()
     {
-        physState.DoOnDisable();
+        moveState.DoOnDisable();
     }
 
     private void Start()
     {
-        physState.DoStart();
         moveState.DoStart();
+        actionState.DoStart();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
-        physState.DoUpdate();
         moveState.DoUpdate();
+        actionState.DoUpdate();
 
         if (Input.GetKey(KeyCode.Escape))
             Cursor.lockState = CursorLockMode.None;
@@ -119,7 +119,7 @@ public class PlayerAdventure : MonoBehaviour
 
     private void FixedUpdate()
     {
-        physState.DoFixedUpdate();
+        moveState.DoFixedUpdate();
     }
 
     private void LateUpdate()
@@ -129,17 +129,17 @@ public class PlayerAdventure : MonoBehaviour
             if (player.GetIsGround)
                localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GetGroundNormal));
         }
-            physState.DoLateUpdate();
+            moveState.DoLateUpdate();
     }
 
     void BeforePhys()
     {
-        moveState.DoBeforePhys();
+        actionState.DoBeforePhys();
     }
 
     void AfterPhys()
     {
-        moveState.DoAfterPhys();
+        actionState.DoAfterPhys();
 
         if (Input.GetButton("Fly"))
         {
@@ -155,13 +155,13 @@ public class PlayerAdventure : MonoBehaviour
 
     void BeforeUploadSpeed()
     {
-        moveState.DoAfterPhys();
+        actionState.DoAfterPhys();
     }
 
     void PlayerCollision()
     {
         player.tryGroundDistance = player.physBody.velocity.magnitude < currPms.runSpeed ? currPms.tryGroundDistance : currPms.tryGroundDistanceFast;
-        moveState.DoBeforeCol();
+        actionState.DoBeforeCol();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -177,26 +177,26 @@ public class PlayerAdventure : MonoBehaviour
                     if (newPath != loopPath && (Vector3.Dot(other.transform.forward, player.InternalSpeed) > 0))
                     {
                         loopPath = newPath;
-                        physState.TransitionTo("Loop");
+                        moveState.TransitionTo("Loop");
                     }
                 }
                 else
                 {
                     loopPath = null;
-                    physState.TransitionTo("FreeRoam");
+                    moveState.TransitionTo("FreeRoam");
                 }
             }
         }
-        physState.DoOnTriggerEnter(other);
+        moveState.DoOnTriggerEnter(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        physState.DoOnTriggerExit(other);
+        moveState.DoOnTriggerExit(other);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        physState.DoOnTriggerStay(other);
+        moveState.DoOnTriggerStay(other);
     }
 }

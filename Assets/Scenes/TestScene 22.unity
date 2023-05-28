@@ -36070,7 +36070,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 491ea59f642631b4d9050f3a2f8802f8, type: 2}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: defRad
-      value: 4
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: defElev
@@ -36078,11 +36078,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: fovFast
-      value: 70
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: maxAngle
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: radSpeed
@@ -36098,10 +36098,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: angleSpeed
-      value: 0.2
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
       propertyPath: playerOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: elevPhysSpeed
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: upAdjustSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: autoAdjustElev
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6918861746933500411, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
+      propertyPath: followOnSlopes
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7482506402977050399, guid: 2027a2c33102a2f42aff25aa0b26bd09, type: 3}
