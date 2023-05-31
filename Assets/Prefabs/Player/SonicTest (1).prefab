@@ -730,6 +730,11 @@ MonoBehaviour:
   playerOffset: 1
   minRunSpeed: 12
   maxRunSpeed: 23
+  upAdjustSpeed: 0
+  elevPhysSpeed: 0
+  followOnSlopes: 0
+  autoAdjustElev: 0
+  physAdjustElev: 0
   player: {fileID: 874118998128462732}
   cam: {fileID: 1915301887404134216}
 --- !u!1 &6918861747101164541
