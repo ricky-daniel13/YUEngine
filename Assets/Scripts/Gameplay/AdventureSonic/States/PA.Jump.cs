@@ -57,6 +57,7 @@ public class SonicState_Jump
         trg.steps.source.PlayOneShot(trg.steps.Jump);
         trg.jumpball.SetActive(true);
         trg.jumpballAnimator.SetTrigger("Do");
+        trg.jumpballBall.SetActive(false);
     }
 
 
@@ -64,6 +65,7 @@ public class SonicState_Jump
     {
         trg.anim.anim.SetBool(idIsJump, false);
         trg.jumpball.SetActive(false);
+        trg.jumpballBall.SetActive(true);
     }
 
 

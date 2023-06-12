@@ -83,7 +83,13 @@ public class SonicState_Walk
 
         if (Input.GetButtonDown("Roll") && trg.player.GetIsGround)
         {
-            machine.TransitionTo("Roll");
+            if(trg.player.InternalSpeed.magnitude >0.1f){
+                machine.TransitionTo("Roll");
+                return;
+            }
+            else{
+                machine.TransitionTo("SpinDash");
+            }
             return;
         }
     }

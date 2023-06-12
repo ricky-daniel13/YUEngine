@@ -57,7 +57,7 @@ public class SonicState_Roll
         trg.anim.anim.SetBool(idIsRoll, true);
         trg.trail.SetActive(true);
         trg.jumpball.SetActive(true);
-        trg.jumpballBall.SetActive(false);
+        //trg.jumpballBall.SetActive(false);
 
         trg.mvm.accOnDesiredDir = false;
         trg.mvm.rotaDecelFactor = 10;
@@ -77,8 +77,9 @@ public class SonicState_Roll
         trg.anim.anim.SetBool(idIsRoll, false);
         trg.trail.SetActive(false);
         trg.jumpball.SetActive(false);
-        trg.jumpballBall.SetActive(true);
+        //trg.jumpballBall.SetActive(true);
         trg.player.slopeFactor = trg.currPms.slopeFactor;
+        trg.anim.anim.ResetTrigger("toRoll");
     }
 
     void Update()
@@ -116,6 +117,7 @@ public class SonicState_Roll
         else
             trg.player.slopeFactor = trg.currPms.rollSlopeDownFactor;
 
+        trg.player.doFriction = !(trg.input.mag > 0) || trg.player.GetIsControlLock;
          trg.mvm.DoInputRota(0, trg.currPms.rollDcl, Mathf.Infinity, trg.currPms.rollRotaSpeed, trg.input);
 
     }

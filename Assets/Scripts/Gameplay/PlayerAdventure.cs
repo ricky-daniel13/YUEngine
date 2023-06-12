@@ -52,20 +52,27 @@ public class PlayerAdventure : MonoBehaviour
     SonicState_Jump stateJump = new SonicState_Jump();
     SonicState_Roll stateRoll = new SonicState_Roll();
 
+    SonicState_SpinDash stateSpinDash = new SonicState_SpinDash();
+    public SonicState_SpinDash.SonicStateData_SpinDash spinDashData;
+
 
     public MonoStateMachine<PlayerAdventure> moveState;
     public PlayerStateMachine<PlayerAdventure> actionState;
 
     Vector3 localFacing = Vector3.forward;
-    public Vector3 getGlobalFacing { get { return player.transform.TransformVector(localFacing); } }
+    public Vector3 globalFacing { get { return player.transform.TransformVector(localFacing); } 
+    set {localFacing=player.transform.InverseTransformVector(value);} }
 
     private void Awake()
     {
+        localFacing = transform.forward;
+        transform.rotation = Quaternion.identity;
         actionState = new PlayerStateMachine<PlayerAdventure>(this);
         actionState.AddStartState(stateWalk.GetState());
         actionState.AddState(stateRoll.GetState());
         actionState.AddState(stateFall.GetState());
         actionState.AddState(stateJump.GetState());
+        actionState.AddState(stateSpinDash.GetState(spinDashData));
         actionState.Build();
 
         moveState = new MonoStateMachine<PlayerAdventure>(this);
@@ -126,16 +133,17 @@ public class PlayerAdventure : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (player.InternalSpeed.sqrMagnitude > Mathf.Epsilon)
+        //Debug.Log("Projected speed: " + Vector3.ProjectOnPlane(player.InternalSpeed, transform.up).sqrMagnitude);
+        if (Vector3.ProjectOnPlane(player.InternalSpeed, player.GetGroundNormal).sqrMagnitude > Mathf.Epsilon*2)
         {
             
             localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GetGroundNormal));
         }
         moveState.DoLateUpdate();
         trail.transform.position = transform.position + transform.up * trailOffset;
-        jumpball.transform.position = transform.position + transform.up * jumpballOffset;
-        jumpball.transform.rotation = Quaternion.LookRotation(getGlobalFacing, transform.up);
-        jumpball.transform.GetChild(0).transform.localRotation = jumpball.transform.GetChild(0).transform.localRotation * Quaternion.AngleAxis(Mathf.Max(minBallSpeed, player.InternalSpeed.magnitude)*anglePerUnitSpeed*Time.deltaTime, Vector3.right);
+        jumpball.transform.parent.position = transform.position + transform.up * jumpballOffset;
+        jumpball.transform.parent.transform.rotation = Quaternion.LookRotation(globalFacing, transform.up);
+        jumpball.transform.transform.localRotation = jumpball.transform.transform.localRotation * Quaternion.AngleAxis(Mathf.Max(minBallSpeed, player.InternalSpeed.magnitude)*anglePerUnitSpeed*Time.deltaTime, Vector3.right);
     }
 
     void BeforePhys()

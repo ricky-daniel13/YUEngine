@@ -471,7 +471,7 @@ namespace YU2
             // based on-> https://stackoverflow.com/a/4372760 
             float slopeUpDot = Vector3.Dot(-gravityDir, averageFloorNor);
             //float speedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
-            Debug.Log("Slope up dot:" + slopeUpDot + "/" + cosMinAngle +", " + slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor)))));
+            //Debug.Log("Slope up dot:" + slopeUpDot + "/" + cosMinAngle +", " + slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor)))));
             if (slopeUpDot < cosMinAngle|| controlLockTimer > 0)
             {
                 Debug.DrawRay(transform.position, slopeVector, Color.red);

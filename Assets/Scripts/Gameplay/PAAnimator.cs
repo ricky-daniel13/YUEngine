@@ -30,6 +30,7 @@ public class PAAnimator : MonoBehaviour
         idIsGround = Animator.StringToHash("isGround");
         idHMove = Animator.StringToHash("hMove");
         idVMove = Animator.StringToHash("vMove");
+        currFwr = player.globalFacing;
     }
 
     // Update is called once per frame
@@ -68,7 +69,7 @@ public class PAAnimator : MonoBehaviour
             currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);*/
 
 
-        fwr = player.getGlobalFacing;
+        fwr = player.globalFacing;
 
         currUp = Vector3.SmoothDamp(currUp, player.player.GetGroundNormal, ref vscUp, slopeRotaSpeed);
 

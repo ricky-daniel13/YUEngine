@@ -60,7 +60,7 @@ public class DummyAnimator : MonoBehaviour
             fwr = Vector3.ProjectOnPlane(currFwr, player.transform.up).normalized;
         }*/
 
-        fwr = player.getGlobalFacing;
+        fwr = player.globalFacing;
         
 
         currUp = Vector3.SmoothDamp(currUp, player.transform.up, ref vscUp, slopeRotaSpeed);
