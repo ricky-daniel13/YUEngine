@@ -31,11 +31,11 @@ namespace YU2
 
         [Header("Movement")]
         public float frc = 6;
-        public float slopeFactor=20, maxGroundSpeed=80, airDragLimit=6, airDragHrLimit = 0.46875f, drag = 0.0625f, controlLockTimer, airToGroundSpeedMultiplier=1;
+        public float slopeFactor=20, maxGroundSpeed=80, airDragLimit=6, airDragHrLimit = 0.46875f, drag = 0.0625f, controlLockTimer, controlLockTime, airToGroundSpeedMultiplier=1;
         public bool slopeSpeedAdjust, doControlLock, doFriction=true, doAirDrag = true, doGravity=true, doPhysics=true, doSpeedUpload=true, gravBasedSlope=false;
         [Header("Collision")]
         [Tooltip("El angulo maximo que puede tener una superficie antes de dejar de ser suelo")]
-        public float maxAngle = 50;
+        public float maxFloorAngle = 50;
         [Tooltip("El angulo minimo que puede tener una superficie para ser techo")]
         public float maxCeiAngle = 140;
         [Tooltip("El angulo maximo en el que Sonic puede pararse sin que lo arrastre la pendiente")]
@@ -108,7 +108,7 @@ namespace YU2
 
         public void processAngleValues()
         {
-            cosMaxAngle = Extensions.DegCos(maxAngle);
+            cosMaxAngle = Extensions.DegCos(maxFloorAngle);
             cosMaxCei = Extensions.DegCos(maxCeiAngle);
             cosMinAngle = Extensions.DegCos(maxStandAngle);
             cosSlipAngle = Extensions.DegCos(maxSlipAngle);
@@ -470,13 +470,14 @@ namespace YU2
         {
             // based on-> https://stackoverflow.com/a/4372760 
             float slopeUpDot = Vector3.Dot(-gravityDir, averageFloorNor);
-            float speedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
-            if (slopeUpDot < cosMinAngle)
+            //float speedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
+            Debug.Log("Slope up dot:" + slopeUpDot + "/" + cosMinAngle +", " + slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor)))));
+            if (slopeUpDot < cosMinAngle|| controlLockTimer > 0)
             {
                 Debug.DrawRay(transform.position, slopeVector, Color.red);
                 InternalSpeed += slopeVector * (slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
             }
-            float newSpeedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
+            //float newSpeedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
             //Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
             DoSlopeSlip(slopeUpDot);
         }
@@ -488,7 +489,7 @@ namespace YU2
                 onSlopeSlip?.Invoke();
                 grounded = false;
                 colCount = 0;
-                controlLockTimer = 0.7f;
+                controlLockTimer = controlLockTime;
                 if (slopeUpDot < cosMaxAngle)
                 {
                     transform.rotation = Quaternion.FromToRotation(Vector3.up, -gravityDir);

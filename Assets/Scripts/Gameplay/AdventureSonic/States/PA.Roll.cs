@@ -56,6 +56,8 @@ public class SonicState_Roll
         trg.anim.isGrounded = true;
         trg.anim.anim.SetBool(idIsRoll, true);
         trg.trail.SetActive(true);
+        trg.jumpball.SetActive(true);
+        trg.jumpballBall.SetActive(false);
 
         trg.mvm.accOnDesiredDir = false;
         trg.mvm.rotaDecelFactor = 10;
@@ -74,20 +76,17 @@ public class SonicState_Roll
     {
         trg.anim.anim.SetBool(idIsRoll, false);
         trg.trail.SetActive(false);
+        trg.jumpball.SetActive(false);
+        trg.jumpballBall.SetActive(true);
         trg.player.slopeFactor = trg.currPms.slopeFactor;
     }
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump") && trg.player.GetIsGround && !isJumping)
+        if (Input.GetButtonDown("Jump") && trg.player.GetIsGround)
         {
-            trg.player.InternalSpeed += trg.player.GetGroundNormal * trg.currPms.jumpForce;
-            trg.player.transform.position = trg.transform.position += (trg.player.GetGroundNormal) * 0.2f;
-            trg.player.transform.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
-            trg.player.GetIsGround = false;
-            isJumping = true;
-            trg.player.skipNextCol = true;
-            trg.steps.source.PlayOneShot(trg.steps.Jump);
+            machine.TransitionTo("Jump");
+            return;
         }
     }
 
@@ -106,7 +105,10 @@ public class SonicState_Roll
             if(isJumping)
                 trg.steps.source.PlayOneShot(trg.steps.Land);
             isJumping = false;
-            
+        }
+        else
+        {
+            isJumping = true;
         }
 
         if (Vector3.Dot(trg.player.GetSlopeVector, trg.player.InternalSpeed.normalized) < 0)

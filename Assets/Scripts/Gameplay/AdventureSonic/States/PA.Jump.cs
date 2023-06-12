@@ -53,15 +53,17 @@ public class SonicState_Jump
         trg.player.transform.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
         trg.player.GetIsGround = false;
         trg.player.skipNextCol = true;
-        trg.anim.anim.SetTrigger("groundToJump");
         trg.anim.anim.SetBool(idIsJump, true);
         trg.steps.source.PlayOneShot(trg.steps.Jump);
+        trg.jumpball.SetActive(true);
+        trg.jumpballAnimator.SetTrigger("Do");
     }
 
 
     void End()
     {
         trg.anim.anim.SetBool(idIsJump, false);
+        trg.jumpball.SetActive(false);
     }
 
 

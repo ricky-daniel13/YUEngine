@@ -33,7 +33,9 @@ public class PlayerAdventure : MonoBehaviour
 
     public PAAnimator anim;
     public Footsetps steps;
-    public GameObject trail;
+    public GameObject trail, jumpball, jumpballBall;
+    public float trailOffset, jumpballOffset, minBallSpeed, anglePerUnitSpeed;
+    public Animator jumpballAnimator;
     public YUMovement mvm=new YUMovement();
     public PathLoop loopPath;
     public BezierKnot loopKnot;
@@ -124,12 +126,16 @@ public class PlayerAdventure : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (player.InternalSpeed.sqrMagnitude > 0.001)
+        if (player.InternalSpeed.sqrMagnitude > Mathf.Epsilon)
         {
-            if (player.GetIsGround)
-               localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GetGroundNormal));
+            
+            localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GetGroundNormal));
         }
-            moveState.DoLateUpdate();
+        moveState.DoLateUpdate();
+        trail.transform.position = transform.position + transform.up * trailOffset;
+        jumpball.transform.position = transform.position + transform.up * jumpballOffset;
+        jumpball.transform.rotation = Quaternion.LookRotation(getGlobalFacing, transform.up);
+        jumpball.transform.GetChild(0).transform.localRotation = jumpball.transform.GetChild(0).transform.localRotation * Quaternion.AngleAxis(Mathf.Max(minBallSpeed, player.InternalSpeed.magnitude)*anglePerUnitSpeed*Time.deltaTime, Vector3.right);
     }
 
     void BeforePhys()

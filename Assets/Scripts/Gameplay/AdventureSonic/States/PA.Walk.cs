@@ -63,7 +63,7 @@ public class SonicState_Walk
         trg.player.slopeFactor = trg.currPms.slopeFactor;
         trg.player.frc = trg.currPms.frc;
         trg.anim.isGrounded = true;
-        trg.mvm.accOnDesiredDir = true;
+        
         trg.mvm.rotaDecelFactor = trg.currPms.rotaModeSpdMul;
         trg.mvm.brakeAngle = Extensions.DegCos(trg.currPms.inputBehindAngle);
         trg.mvm.isBraking = false;
@@ -77,6 +77,7 @@ public class SonicState_Walk
         if (Input.GetButtonDown("Jump") && trg.player.GetIsGround)
         {
             machine.TransitionTo("Jump");
+            trg.anim.anim.SetTrigger("groundToJump");
             return;
         }
 
@@ -94,6 +95,11 @@ public class SonicState_Walk
 
         
         float evMaxSpeed = trg.currPms.maxSpeedOverPush.Evaluate(trg.input.mag) * trg.currPms.topSpeed;
+
+        if(trg.player.InternalSpeed.magnitude > trg.currPms.runSpeed)
+            trg.mvm.accOnDesiredDir = true;
+        else
+            trg.mvm.accOnDesiredDir = false;
 
         //Debug.Log("Input magnitude: " + trg.input.mag + " ev:" + evMaxSpeed + " evaluation: " + trg.currPms.maxSpeedOverPush.Evaluate(trg.input.mag));
 

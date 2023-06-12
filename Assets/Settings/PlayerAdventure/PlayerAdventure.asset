@@ -18,12 +18,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   acc: 12
-  dcc: 78
+  dcc: 45
   frc: 8
   air: 14
   topSpeed: 26
   runSpeed: 15
-  slopeFactor: 20
+  slopeFactor: 18
   accOverSpeed:
     serializedVersion: 2
     m_Curve:
@@ -38,12 +38,12 @@ MonoBehaviour:
       outWeight: 0.12376091
     - serializedVersion: 3
       time: 0.98463374
-      value: 0.6
-      inSlope: -1.51697
-      outSlope: -1.51697
+      value: 0.7
+      inSlope: -1.0808127
+      outSlope: -1.0808127
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.06690159
+      inWeight: 0.052469272
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -109,11 +109,11 @@ MonoBehaviour:
   jumpTangentDrag: 16
   rotaModeSpeed: 450
   rotaModeSpeedFast: 120
-  rotaModeSpeedMax: 30
+  rotaModeSpeedMax: 26
   rotaModeSpeedMin: 15
   rotaModeSpdMul: 4
-  jumpForce: 15
+  jumpForce: 12
   lowJumpSpeed: 6
   quickForce: 30
   gravityForce: 35
-  upGravityForce: 20
+  upGravityForce: 16

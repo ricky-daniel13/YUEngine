@@ -17,7 +17,7 @@ MonoBehaviour:
   InteractionLayer:
     serializedVersion: 2
     m_Bits: 128
-  acc: 13
+  acc: 25
   dcc: 25
   frc: 8
   air: 14

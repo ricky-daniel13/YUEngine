@@ -10,12 +10,13 @@ public class PAAnimator : MonoBehaviour
     Vector3 fwr = Vector3.forward;
     Vector3 currFwr = Vector3.forward;
     Vector3 currUp = Vector3.up;
-    Vector3 vscUp;
+    Vector3 vscUp=Vector3.zero;
     Vector3 fwrVsc;
     public float faceSpeed; 
     public float rotaSpeed;
     public float slopeRotaSpeed;
     public float inputChangeSpeed;
+    public float VertOffset;
     public int waitFramesToLand = 5;
 
     public bool isGrounded;
@@ -44,7 +45,7 @@ public class PAAnimator : MonoBehaviour
         anim.SetFloat(idSpeed, player.player.InternalSpeed.magnitude);
         anim.SetFloat(idvSpeed, Vector3.Dot(player.player.InternalSpeed, -player.player.gravityDir));
         anim.SetBool(idIsGround, framesToLand > 0);
-        if(player.player.InternalSpeed.sqrMagnitude > 0.01)
+        /*if(player.player.InternalSpeed.sqrMagnitude > 0.01)
         {
             if (player.player.GetIsGround)
                 fwr = player.player.InternalSpeed.normalized;
@@ -59,21 +60,30 @@ public class PAAnimator : MonoBehaviour
         else
         {
             fwr = Vector3.ProjectOnPlane(currFwr, player.transform.up).normalized;
-        }
+        }*/
 
-        if(Vector3.Dot(currFwr,fwr)>0)
+        /*if(Vector3.Dot(currFwr,fwr)>0)
             currFwr = Vector3.SmoothDamp(currFwr, fwr, ref fwrVsc, faceSpeed).normalized;
         else
-            currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);
-        currUp = Vector3.SmoothDamp(currUp, player.transform.up, ref vscUp, slopeRotaSpeed);
+            currFwr = Vector3.RotateTowards(currFwr, fwr, rotaSpeed * Time.deltaTime, 0);*/
 
-        transform.position = player.transform.position;
+
+        fwr = player.getGlobalFacing;
+
+        currUp = Vector3.SmoothDamp(currUp, player.player.GetGroundNormal, ref vscUp, slopeRotaSpeed);
+
+        if (Vector3.Dot(currFwr, fwr) > 0)
+            currFwr = Extensions.ProjectDirectionOnPlane(Vector3.RotateTowards(currFwr, fwr, Mathf.Deg2Rad * faceSpeed * Time.deltaTime, 0f), currUp);
+        else
+            currFwr = Extensions.ProjectDirectionOnPlane(Vector3.RotateTowards(currFwr, fwr, Mathf.Deg2Rad * rotaSpeed * Time.deltaTime, 0f), currUp);
+
+        transform.position = player.transform.position + player.transform.up * VertOffset;
         transform.rotation = Quaternion.LookRotation(currFwr, currUp);
 
         Vector3 desDir = player.transform.InverseTransformDirection(player.input.playerDir);
 
 
-        desiredSpeed = Quaternion.LookRotation(player.transform.rotation * desDir, player.transform.up) * Quaternion.Inverse(Quaternion.LookRotation(fwr, player.transform.up)) * Vector3.forward;
+        desiredSpeed = Quaternion.LookRotation(player.transform.rotation * desDir, player.transform.up) * Quaternion.Inverse(Quaternion.LookRotation(currFwr, player.transform.up)) * Vector3.forward;
 
         currDesired = Vector3.MoveTowards(currDesired, player.input.mag > 0 ? desiredSpeed : Vector3.zero, inputChangeSpeed * Time.deltaTime);
         

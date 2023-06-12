@@ -123,7 +123,7 @@ public class YUMovement
 
             if (accOnDesiredDir)
             {
-                hSpeed = (newDir * currSpeed) + inputDir * ((isBraking ? inDcc : (currSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime);
+                hSpeed = (newDir * currSpeed) + inputDir * ((!canTurn ? inDcc : (currSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime);
                 Debug.DrawRay(transform.position, transform.TransformDirection(inputDir * ((isBraking ? inDcc : (currSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime)), Color.magenta, Time.fixedDeltaTime);
             }
             else
