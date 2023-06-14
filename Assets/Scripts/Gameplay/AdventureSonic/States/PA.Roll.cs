@@ -70,6 +70,7 @@ public class SonicState_Roll
         trg.anim.anim.SetTrigger("toRoll");
         ParamChange();
         trg.steps.source.PlayOneShot(trg.steps.Spin);
+        trg.player.doFriction = true;
     }
 
     void End()
@@ -80,6 +81,7 @@ public class SonicState_Roll
         //trg.jumpballBall.SetActive(true);
         trg.player.slopeFactor = trg.currPms.slopeFactor;
         trg.anim.anim.ResetTrigger("toRoll");
+        trg.player.doFriction = false;
     }
 
     void Update()
@@ -93,7 +95,7 @@ public class SonicState_Roll
 
     void BeforePhys()
     {
-        float slopeUpDot = Vector3.Dot(trg.transform.up, trg.player.GetGroundNormal);
+        float slopeUpDot = Vector3.Dot(trg.transform.up, trg.player.GroundNormal);
         if ((trg.player.InternalSpeed.magnitude < trg.currPms.rollStopSpeed && slopeUpDot > Extensions.DegCos(trg.player.maxStandAngle)) && (trg.player.GetIsGround))
         {
             machine.TransitionTo("Walk");
@@ -117,8 +119,7 @@ public class SonicState_Roll
         else
             trg.player.slopeFactor = trg.currPms.rollSlopeDownFactor;
 
-        trg.player.doFriction = !(trg.input.mag > 0) || trg.player.GetIsControlLock;
-         trg.mvm.DoInputRota(0, trg.currPms.rollDcl, Mathf.Infinity, trg.currPms.rollRotaSpeed, trg.input);
+        trg.mvm.DoInputRota(0, trg.currPms.rollDcl, Mathf.Infinity, trg.currPms.rollRotaSpeed, trg.input);
 
     }
 }

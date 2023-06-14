@@ -91,11 +91,10 @@ public class YUMovement
 
         // If there is some input...
 
-        Vector3 inputDir = transform.InverseTransformDirection(input.playerDir);
-        transform.BreakDownSpeed(player.InternalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
-
-        if (input.mag != 0)
+        if (input.mag > 0)
         {
+            Vector3 inputDir = transform.InverseTransformDirection(input.playerDir);
+            transform.BreakDownSpeed(player.InternalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
             // Fetch velocity in the Player's local frame, decompose into lateral and vertical
             // motion, and decompose lateral motion further into normal and tangential components.
             Debug.DrawRay(transform.position, transform.TransformDirection(inputDir), Color.black, Time.fixedDeltaTime);
@@ -149,9 +148,6 @@ public class YUMovement
 
             //Debug.DrawRay(transform.position, player.InternalSpeed, Color.red, Time.fixedDeltaTime);
         }
-
-        float newSpeedInUp = Vector3.Dot(player.InternalSpeed, Vector3.up);
-        //Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
     }
 
 
@@ -160,7 +156,7 @@ public class YUMovement
         float vAcc = Mathf.Min(input.mag, 1);
 
         Vector3 rgt = refFrame.rgt;//Quaternion.LookRotation(Vector3.right) * disDir;
-        input.playerDir = Vector3.Cross(rgt, player.GetGroundNormal).normalized;
+        input.playerDir = Vector3.Cross(rgt, player.GroundNormal).normalized;
 
         input.playerDir = transform.InverseTransformDirection(input.playerDir);
         rgt = Quaternion.LookRotation(Vector3.right) * input.playerDir;

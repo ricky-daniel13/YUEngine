@@ -33,6 +33,7 @@ public class SonicState_Walk
         state.BeforePhys += BeforePhys;
         state.Build += OnBuild;
         state.ParamChange += ParamChange;
+        state.RequestExternalMove = () => { return true; };
 
         return state;
     }
@@ -83,14 +84,14 @@ public class SonicState_Walk
 
         if (Input.GetButtonDown("Roll") && trg.player.GetIsGround)
         {
-            if(trg.player.InternalSpeed.magnitude >0.1f){
+            if(trg.player.InternalSpeed.magnitude > trg.currPms.rollStopSpeed){
                 machine.TransitionTo("Roll");
                 return;
             }
             else{
                 machine.TransitionTo("SpinDash");
+                return;
             }
-            return;
         }
     }
 

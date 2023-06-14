@@ -58,7 +58,7 @@ namespace YU2
         public PlayerInput TransformInput(InputRef frameRef)
         {
             PlayerInput builtInp;
-            Vector3 globalUp = player.GetGroundNormal;
+            Vector3 globalUp = player.GroundNormal;
             Vector3 forward = frameRef.forw;
             Vector3 bestPln = Vector3.up;
 
@@ -153,7 +153,7 @@ namespace YU2
         public PlayerInput TransformInputSimple(InputRef frameRef)
         {
             PlayerInput builtInp;
-            Vector3 globalUp = player.GetGroundNormal;
+            Vector3 globalUp = player.GroundNormal;
             Vector3 forward = Extensions.ProjectDirectionOnPlane(frameRef.forw, globalUp);
             if(forward == Vector3.zero)
             {
@@ -190,7 +190,8 @@ namespace YU2
             {
                 joystick = fakeInput;
             }
-
+            if (joystick.magnitude < 0.001f)
+                joyInput.mag = 0;
             joyInput.mag = joystick.magnitude;
 
             if (joyInput.mag > 0)

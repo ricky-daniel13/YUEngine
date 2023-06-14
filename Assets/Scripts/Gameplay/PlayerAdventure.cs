@@ -134,15 +134,15 @@ public class PlayerAdventure : MonoBehaviour
     private void LateUpdate()
     {
         //Debug.Log("Projected speed: " + Vector3.ProjectOnPlane(player.InternalSpeed, transform.up).sqrMagnitude);
-        if (Vector3.ProjectOnPlane(player.InternalSpeed, player.GetGroundNormal).sqrMagnitude > Mathf.Epsilon*2)
+        if (Vector3.ProjectOnPlane(player.InternalSpeed, player.GroundNormal).sqrMagnitude > 0.000001f)
         {
             
-            localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GetGroundNormal));
+            localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GroundNormal));
         }
         moveState.DoLateUpdate();
         trail.transform.position = transform.position + transform.up * trailOffset;
-        jumpball.transform.parent.position = transform.position + transform.up * jumpballOffset;
-        jumpball.transform.parent.transform.rotation = Quaternion.LookRotation(globalFacing, transform.up);
+        jumpball.transform.parent.position = transform.position + anim.transform.up * jumpballOffset;
+        jumpball.transform.parent.transform.rotation = Quaternion.LookRotation(globalFacing, anim.transform.up);
         jumpball.transform.transform.localRotation = jumpball.transform.transform.localRotation * Quaternion.AngleAxis(Mathf.Max(minBallSpeed, player.InternalSpeed.magnitude)*anglePerUnitSpeed*Time.deltaTime, Vector3.right);
     }
 
@@ -161,7 +161,7 @@ public class PlayerAdventure : MonoBehaviour
             player.InternalSpeed -= speedUp;
             player.InternalSpeed += -player.gravityDir * currPms.jumpForce;
             player.controlLockTimer = -1f;
-            player.transform.position = transform.position + (player.GetGroundNormal * 0.1f);
+            player.transform.position = transform.position + (player.GroundNormal * 0.1f);
             player.GetIsGround = false;
             player.skipNextCol = true;
         }

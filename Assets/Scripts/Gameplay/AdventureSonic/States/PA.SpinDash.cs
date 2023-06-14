@@ -56,7 +56,9 @@ public class SonicState_SpinDash
         ParamChange();
         trg.jumpball.SetActive(true);
         trg.anim.anim.SetBool(idIsRoll, true);
-        trg.steps.source.PlayOneShot(trg.steps.Spin);
+        trg.steps.source.clip = trg.steps.SpinDash;
+        trg.steps.source.time = 0;
+        trg.steps.source.Play();
         acumSpeed=data.minRelease;
         trg.jumpballAnimator.SetTrigger("Do");
     }
@@ -67,6 +69,8 @@ public class SonicState_SpinDash
         trg.jumpball.SetActive(false);
         trg.player.slopeFactor = trg.currPms.slopeFactor;
         trg.anim.anim.ResetTrigger("toRoll");
+        trg.steps.source.Stop();
+        trg.steps.source.PlayOneShot(trg.steps.SpinDashGo);
     }
 
     void Update()
@@ -80,8 +84,9 @@ public class SonicState_SpinDash
         if(!Input.GetButton("Roll")){
             trg.player.InternalSpeed = trg.globalFacing * acumSpeed;
             trg.steps.source.PlayOneShot(trg.steps.Spin);
-            trg.jumpballAnimator.SetTrigger("Do");
+            trg.jumpballAnimator.SetTrigger("DoDash");
             machine.TransitionTo("Roll");
+            return;
         }
     }
 
@@ -90,7 +95,7 @@ public class SonicState_SpinDash
         if(trg.input.mag > 0){
             trg.globalFacing = trg.input.playerDir;
         }
-        trg.player.doFriction = !(trg.input.mag > 0) || trg.player.GetIsControlLock;
+        trg.player.doFriction = true;
         acumSpeed += data.acumPerSecond * Time.deltaTime;
         acumSpeed=Mathf.Min(acumSpeed, data.maxRelease);
         Debug.Log("acumSpeed=" + acumSpeed);

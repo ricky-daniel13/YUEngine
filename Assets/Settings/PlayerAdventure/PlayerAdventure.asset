@@ -74,9 +74,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   rollSlopeUpFactor: 17.5
   rollSlopeDownFactor: 70
-  rollFrc: 6
+  rollFrc: 8
   rollDcl: 28
-  rollStopSpeed: 3
+  rollStopSpeed: 5
   rollRotaSpeed: 90
   tangOverSpeed:
     serializedVersion: 2
@@ -112,8 +112,8 @@ MonoBehaviour:
   rotaModeSpeedMax: 26
   rotaModeSpeedMin: 15
   rotaModeSpdMul: 4
-  jumpForce: 12
+  jumpForce: 14
   lowJumpSpeed: 6
   quickForce: 30
   gravityForce: 35
-  upGravityForce: 16
+  upGravityForce: 18

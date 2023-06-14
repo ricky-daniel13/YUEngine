@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraSystem : MonoBehaviour
 {
     public float radSpeed, radSpeedClose, azimSpeed, azimStickSpeed, elevSpeed, elevSpeedAir, defRad, closeRad, tooCloseRad, defAzim, defElev, defElevJump, lookSpeed, lookHorSpeed,fovSpeed,fovNormal,fovFast,maxAngle,topAngle,angleSpeed, playerOffset, minRunSpeed, maxRunSpeed, upAdjustSpeed,elevPhysSpeed, timeToAuto, autoTransTime, followSpeed, followAmmount, cameraRad;
-    float rad, azim, elev, radVel, azimVel, elevVel,fovVel,currFov,currentUpDot, lookSpeedVel, currAutoTime, autoAmmount,autoVel,frozenRad;
+    float rad, azim, elev, radVel, azimVel, elevVel,fovVel,currFov, currentUpDot, lookSpeedVel, currAutoTime, autoAmmount,autoVel,frozenRad;
     public bool followOnSlopes,autoAdjustElev,physAdjustElev;
     bool isJumpingState;
     public PlayerAdventure player;
@@ -45,7 +45,11 @@ public class CameraSystem : MonoBehaviour
         float currentUpDot = Vector3.Dot(currentUp, Vector3.up);
         float dotVelFacing = Vector3.Dot(groundVelocity, cam.transform.forward);
         //Definimos la matriz local para que sea el centro de Sonic, mas un offset solo en el eje vertical. Si Sonic esta de lado, el offset se queda en ceros, en lugar de moverse a la derecha, ya que eso marea un poco
-        followOffset = Vector3.SmoothDamp(followOffset, (dotVelFacing > 0 ? groundVelocity : Vector3.ProjectOnPlane(groundVelocity, cam.transform.forward)) * (player.actionState.StateName == "Jump" ? 0 : followAmmount), ref followVel, followSpeed);
+        Vector3 followTarget = (dotVelFacing > 0 ? groundVelocity : Vector3.ProjectOnPlane(groundVelocity, cam.transform.forward)) * (player.actionState.StateName == "Jump" ? 0 : followAmmount);
+        followOffset = Vector3.SmoothDamp(followOffset, followTarget, ref followVel, followSpeed);
+        //Debug.Log("Follow difference: " + (followOffset - followTarget).sqrMagnitude);
+        /*if ((followOffset - followTarget).sqrMagnitude > 0.000001f)
+            followOffset = followTarget;*/
 
         Vector3 focusCenter = player.transform.position + (Vector3.up * currentUpDot * playerOffset) + followOffset;
 
@@ -172,9 +176,11 @@ public class CameraSystem : MonoBehaviour
                     currRadSpeed = radSpeedClose;
                 }
             }
-            if (autoAmmount > 0f)
-                rad = Mathf.SmoothDamp(rad, currRadTarget, ref radVel, currRadSpeed);
 
+            rad = Mathf.SmoothDamp(rad, currRadTarget, ref radVel, currRadSpeed);
+
+            if (Mathf.Abs(currRadTarget - rad) < 0.000001f)
+                rad=currRadTarget;
             //Calculamos un angulo de elevacion que nos deje a la altura deseada. Tenemos que limitar la altura para que no supere al radio.
             //Si para obtener la altura de un punto a cierto radio y angulo se hace radio por sin del angulo
             //Para obtener el angulo de un punto a cierto radio y altura se hace arcsin de altura entre radio

@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &980071038
 Transform:
   m_ObjectHideFlags: 0
@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 980071037}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
+  m_LocalScale: {x: 1.127, y: 1.127, z: 1.127}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7461907561864855573}
@@ -49,7 +49,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1352818886
 Transform:
   m_ObjectHideFlags: 0
@@ -144,12 +144,12 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874118998128462733}
   serializedVersion: 2
-  m_Mass: 0.0000001
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 2
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 2
 --- !u!114 &874118998128462722
@@ -185,8 +185,8 @@ MonoBehaviour:
   gravBasedSlope: 0
   maxFloorAngle: 50
   maxCeiAngle: 140
-  maxStandAngle: 1
-  maxSlipAngle: 30
+  maxStandAngle: 15
+  maxSlipAngle: 35
   slipSpeedLimit: 5
   tryGroundDistance: 0.5
   groundMethod: 1
@@ -245,16 +245,21 @@ MonoBehaviour:
   anim: {fileID: 874118996631356631}
   steps: {fileID: 874118996631356625}
   trail: {fileID: 6918861745356568197}
-  jumpball: {fileID: 1352818884}
+  jumpball: {fileID: 980071037}
   jumpballBall: {fileID: 7837905781905283759}
   trailOffset: 0.6
-  jumpballOffset: 0.45
-  minBallSpeed: 10
+  jumpballOffset: 0.43
+  minBallSpeed: 15
   anglePerUnitSpeed: 100
   jumpballAnimator: {fileID: 1352818885}
   loopPath: {fileID: 0}
   currPms: {fileID: 0}
   threeD: {fileID: 11400000, guid: f5e02f4833297604fa0713f3dc4dacd9, type: 2}
+  spinDashData:
+    acumPerSecond: 10
+    minRelease: 10
+    maxRelease: 60
+    rotationSpeed: 100
 --- !u!1 &1915301887404134218
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,17 +442,17 @@ TrailRenderer:
       - serializedVersion: 3
         time: 0
         value: 0
-        inSlope: 8.594008
-        outSlope: 8.594008
+        inSlope: 36.88788
+        outSlope: 36.88788
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.41025642
+        outWeight: 0.15554005
       - serializedVersion: 3
         time: 0.07446964
         value: 1
-        inSlope: 0.07517932
-        outSlope: 0.07517932
+        inSlope: 2.2686288
+        outSlope: 2.2686288
         tangentMode: 0
         weightedMode: 0
         inWeight: 1
@@ -457,8 +462,8 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.1745283, g: 0.28120482, b: 1, a: 1}
-      key1: {r: 0.06132078, g: 0.100326635, b: 1, a: 0}
+      key0: {r: 0.19157171, g: 0.35363692, b: 0.990566, a: 1}
+      key1: {r: 0.19157171, g: 0.35363692, b: 0.990566, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -811,6 +816,8 @@ MonoBehaviour:
   Land: {fileID: 8300000, guid: 44e396a0e239f5340b303c5c2b77fd30, type: 3}
   Spin: {fileID: 8300000, guid: 3e2a19bf2e66ca74788aff59a2b5b28b, type: 3}
   Brake: {fileID: 8300000, guid: 894c885eab690184fbe2ab69c64f94ef, type: 3}
+  SpinDash: {fileID: 8300000, guid: 6dc54615da844354eaa710d36b05523d, type: 3}
+  SpinDashGo: {fileID: 8300000, guid: b4006d794ae5961419816b61ec6104c8, type: 3}
 --- !u!114 &874118996631356631
 MonoBehaviour:
   m_ObjectHideFlags: 0

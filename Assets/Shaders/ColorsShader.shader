@@ -39,7 +39,7 @@ Shader "Custom/ColorsShader"
             float2 uv_MainTex;
             float3 viewDir;
             float4 color : COLOR;
-            float3 worldRefl;
+            float3 worldRefl; INTERNAL_DATA
         };
 
         fixed4 _Color;
@@ -82,11 +82,11 @@ Shader "Custom/ColorsShader"
             //o.Albedo = max(remap(_SmoothnessFrm, _Smoothness, 0, 1, spc.a), 0);
             o.Alpha = 1;
             half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
-            /*float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(
-                unity_SpecCube0, IN.worldRefl, roughness * UNITY_SPECCUBE_LOD_STEPS
-            );*/
-            float3 shl = ShadeSH9(float4(o.Normal, 1));
-            o.Emission = ((_RimColor*shl) * max(remap(_RimOFrom, _RimOTo, _RimTFrom, _RimTTo, rim),0)) * _RimMul * fur;
+            float4 envSample = UNITY_SAMPLE_TEXCUBE_LOD(
+                unity_SpecCube0, IN.worldRefl, 1 * UNITY_SPECCUBE_LOD_STEPS
+            );
+            //float3 shl = ShadeSH9(float4(o.Normal, 1));
+            o.Emission = ((_RimColor*envSample) * max(remap(_RimOFrom, _RimOTo, _RimTFrom, _RimTTo, rim),0)) * _RimMul * fur;
             o.Normal = UnpackNormal(tex2D(_BumpMap, IN.uv_MainTex));
         }
         ENDCG

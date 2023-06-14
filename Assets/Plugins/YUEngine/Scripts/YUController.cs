@@ -48,13 +48,13 @@ namespace YU2
         public GroundNormalType groundMethod;
         public LayerMask groundLayer, movingLayer;
         public bool stopOnCeil, stopOnWall;
-        Vector3 connWorldPos, connLocalPos, connDiff, connTorq, connWorldRota, connLocalRota;
+        Vector3 connWorldPos, connLocalPos, connDiff, connTorq, connWorldRota, connLocalRota, newNormal;
         [Header("Gravity")]
         public float gravityForce = 30;
         public float maxGravityForce=70;
         public Vector3 gravityDir=Vector3.down;
         [System.NonSerialized]
-        public bool skipNextCol;
+        public bool skipNextCol, forceNormal;
 
         private float cosMaxAngle, cosMinAngle, cosMaxCei, cosSlipAngle;
 
@@ -69,15 +69,22 @@ namespace YU2
         public bool GetIsCeil { get { return ceilCount > 0; } }
         public bool GetIsWall { get { return wallCount > 0; } }
 
-        public Vector3 GetGroundNormal
+        public Vector3 GroundNormal
         {
             get
             {
                 return averageFloorNor;
             }
+            set
+            {
+                oldNormal = averageFloorNor;
+                averageFloorNor = value;
+                newNormal = value;
+                forceNormal = true;
+            }
         }
 
-        public Vector3 GetGroundPosition
+        public Vector3 GroundPosition
         {
             get
             {
@@ -125,9 +132,16 @@ namespace YU2
             processAngleValues();
         }
 
+        private void OnDisable()
+        {
+            physBody.velocity = Vector3.zero;
+        }
+
 
         private void OnCollisionStay(Collision col)
         {
+            if (!isActiveAndEnabled)
+                return;
             int cacheContacts = col.contactCount;
 
             for (int i = 0; i < cacheContacts; i++)
@@ -209,7 +223,6 @@ namespace YU2
         private void Update()
         {
             //Debug.DrawRay(transform.position, InternalSpeed, Color.green, Time.deltaTime);
-
         }
 
         private void FixedUpdate()
@@ -264,6 +277,14 @@ namespace YU2
                 else if (grounded)
                     willGround = TryGround();
             }
+
+            if (forceNormal)
+            {
+                averageFloorNor = newNormal;
+                newNormal = Vector3.zero;
+                forceNormal = false;
+            }
+
             if(willGround && grounded)
             {
                 if (slopeSpeedAdjust)
@@ -274,10 +295,7 @@ namespace YU2
 
             if (grounded)
             {
-                slopeVector = (gravityDir - Vector3.Dot(gravityDir, averageFloorNor) * averageFloorNor).normalized;
-
-                //Vector3 hSpeed = Vector3.zero, vSpeed = Vector3.zero;
-                
+                slopeVector = Extensions.ProjectDirectionOnPlane(gravityDir, averageFloorNor);
 
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, averageFloorNor);
                 oldNormal = averageFloorNor;
@@ -309,20 +327,24 @@ namespace YU2
             else
                 DoSlopesPhys();
 
+            transform.BreakDownSpeed(finalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
+
             if (grounded){
                 if (doFriction)
-                    DoFriction();
+                    DoFriction(ref hSpeed, ref vSpeed);
             }
             else
             {
                 if (doAirDrag)
-                    DoAirFriction();
+                    DoAirFriction(ref hSpeed, ref vSpeed);
             }
 
-            if(doGravity)
-                DoGravity();
+            if (doGravity)
+                DoGravity(ref hSpeed, ref vSpeed);
 
-            if(stopOnWall)
+            finalSpeed = transform.TransformDirection(hSpeed + vSpeed);
+
+            if (stopOnWall)
                 DoStopOnWall();
         }
 
@@ -338,11 +360,6 @@ namespace YU2
                 connWorldPos = transform.position;
                 connLocalPos = connBody.transform.InverseTransformPoint(connWorldPos);
             }
-        }
-
-        Vector3 ProjectDirectionOnPlane(Vector3 direction, Vector3 normal)
-        {
-            return (direction - normal * Vector3.Dot(direction, normal)).normalized;
         }
 
         void DoColNormal()
@@ -384,8 +401,6 @@ namespace YU2
                     colCount = 1;
                     if (movingLayer.Contains(hit.collider.gameObject.layer))
                     {
-                        /*if(prevConnBody==null)
-                            Debug.Log("Landed on plat");*/
                         connBody = hit.rigidbody;
                     }
 
@@ -419,14 +434,8 @@ namespace YU2
                     transform.position = transform.position - (transform.up * (hit.distance - 0.25f));
                     return true;
                 }
-                /*else
-                {
-                    Debug.Log("TooMuchAngle: " + Vector3.Dot(transform.up, hit.normal));
-                    return false;
-                }*/
 
             }
-            //Debug.Log("No Ground");
             return false;
         }
 
@@ -440,28 +449,27 @@ namespace YU2
             }
         }
 
-        void DoFriction()
+        void DoFriction(ref Vector3 hSpeed, ref Vector3 vSpeed)
         {
-            transform.BreakDownSpeed(finalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
+            //transform.BreakDownSpeed(finalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
             if (hSpeed.magnitude > 0)
             {
                 hSpeed = Vector3.MoveTowards(hSpeed, Vector3.zero, frc * Time.fixedDeltaTime);
-                finalSpeed = transform.TransformDirection(hSpeed +vSpeed);
+            }
+            else
+            {
+                hSpeed = Vector3.zero;
             }
         }
 
-        void DoAirFriction()
+        void DoAirFriction(ref Vector3 hSpeed, ref Vector3 vSpeed)
         {
-            transform.BreakDownSpeed(finalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
-
             float vMagn = Vector3.Dot(InternalSpeed, -gravityDir);
             if (hSpeed.magnitude > airDragHrLimit && (0 < vMagn && vMagn < airDragLimit))
             {
-
                 //float dragCalc = Mathf.Pow(hSpeed.magnitude, 2) * drag; // The variable 
-
                 //hSpeed = Vector3.MoveTowards(hSpeed, Vector3.zero, dragCalc * Time.fixedDeltaTime);
-                finalSpeed = transform.TransformDirection((hSpeed * (Mathf.Pow(drag,Time.fixedDeltaTime))) + vSpeed);
+                hSpeed = hSpeed * (Mathf.Pow(drag,Time.fixedDeltaTime));
             }
 
         }
@@ -470,15 +478,12 @@ namespace YU2
         {
             // based on-> https://stackoverflow.com/a/4372760 
             float slopeUpDot = Vector3.Dot(-gravityDir, averageFloorNor);
-            //float speedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
-            //Debug.Log("Slope up dot:" + slopeUpDot + "/" + cosMinAngle +", " + slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor)))));
-            if (slopeUpDot < cosMinAngle|| controlLockTimer > 0)
+            //Debug.Log("slopeupdot: " + slopeUpDot + "/" + cosMinAngle + ", timer: " + controlLockTimer);
+            if (slopeUpDot < cosMinAngle || controlLockTimer > 0)
             {
                 Debug.DrawRay(transform.position, slopeVector, Color.red);
                 InternalSpeed += slopeVector * (slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
             }
-            //float newSpeedInUp = Vector3.Dot(InternalSpeed, Vector3.up);
-            //Debug.Log("Added speed: " + (newSpeedInUp - speedInUp));
             DoSlopeSlip(slopeUpDot);
         }
 
@@ -515,28 +520,25 @@ namespace YU2
             }
 
             DoSlopeSlip(slopeUpDot);
-
-            
         }
 
-        void DoGravity()
+        void DoGravity(ref Vector3 hSpeed, ref Vector3 vSpeed)
         {
 
             if (grounded)
             {
-                transform.BreakDownSpeed(finalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
-                vSpeed = new Vector3(0.0f, 0.0f, 0.0f);
-                finalSpeed = transform.TransformDirection(hSpeed + vSpeed);
+                vSpeed = Vector3.zero;
             }
             else if (Vector3.Dot(InternalSpeed, gravityDir) < (maxGravityForce))
             {
-                InternalSpeed += gravityDir * gravityForce * Time.fixedDeltaTime;
+                transform.BreakDownSpeed(gravityDir * gravityForce * Time.fixedDeltaTime, out Vector3 gravV, out Vector3 gravH);
+                hSpeed += gravH;
+                vSpeed += gravV;  
             }
         }
 
         void MoveAbovePoint(Vector3 point, Vector3 normal)
         {
-
             float yFactor = Vector3.Angle(normal, transform.rotation * Vector3.up);
             float xFactor = Vector3.Angle(normal, transform.rotation * Vector3.right);
             float zFactor = Vector3.Angle(normal, transform.rotation * Vector3.forward);

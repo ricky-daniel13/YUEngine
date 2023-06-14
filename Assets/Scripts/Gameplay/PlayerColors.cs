@@ -67,7 +67,7 @@ public class PlayerColors : MonoBehaviour
         GUI.Label(new Rect(15, 25 + 15, 250, 100), "position =" + transform.position);
         GUI.Label(new Rect(15, 25 + 15 + 15, 250, 100), "speed magnitude =" + player.InternalSpeed.magnitude.ToString("F2"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15, 250, 100), "fall speed =" + Vector3.Dot(player.InternalSpeed, player.gravityDir).ToString("F2"));
-        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15, 400, 100), "ground angle =" + Vector3.Angle(-player.gravityDir, player.GetGroundNormal).ToString("F2") + ", Slope factor: " + Mathf.Abs(Extensions.DegSin(Vector3.Angle(-player.gravityDir, player.GetGroundNormal))).ToString("F2") + ", dot factor: " + Mathf.Abs(1-Vector3.Dot(-player.gravityDir, player.GetGroundNormal)).ToString("F2"));
+        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15, 400, 100), "ground angle =" + Vector3.Angle(-player.gravityDir, player.GroundNormal).ToString("F2") + ", Slope factor: " + Mathf.Abs(Extensions.DegSin(Vector3.Angle(-player.gravityDir, player.GroundNormal))).ToString("F2") + ", dot factor: " + Mathf.Abs(1-Vector3.Dot(-player.gravityDir, player.GroundNormal)).ToString("F2"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15, 250, 100), "control lock =" + player.controlLockTimer.ToString("F2"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "isRolling =" + isRolling);
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "rota speed calc =" + (Mathf.Max(0, player.InternalSpeed.magnitude - rotaModeSpeedMin) / (rotaModeSpeedMax - rotaModeSpeedMin)).ToString("F3"));
@@ -110,8 +110,8 @@ public class PlayerColors : MonoBehaviour
 
         if ((Input.GetButtonDown("Jump")|| fakeJump) && player.GetIsGround && !isJumping)
         {
-            player.InternalSpeed += player.GetGroundNormal * jumpForce;
-            player.physBody.MovePosition(transform.position += (player.GetGroundNormal) * player.tryGroundDistance);
+            player.InternalSpeed += player.GroundNormal * jumpForce;
+            player.physBody.MovePosition(transform.position += (player.GroundNormal) * player.tryGroundDistance);
             player.physBody.MoveRotation(Quaternion.FromToRotation(Vector3.up, -player.gravityDir));
             //Debug.Log("Jump! + floornor" + player.GetGroundNormal);
             player.GetIsGround = false;
@@ -154,7 +154,7 @@ public class PlayerColors : MonoBehaviour
             player.InternalSpeed -= speedUp;
             player.InternalSpeed += speedUp.normalized * lowJumpSpeed;
             player.GetIsGround = false;
-            player.physBody.MovePosition(transform.position + (player.GetGroundNormal * 0.1f));
+            player.physBody.MovePosition(transform.position + (player.GroundNormal * 0.1f));
         }
 
         if (Input.GetButton("Fly"))
@@ -163,7 +163,7 @@ public class PlayerColors : MonoBehaviour
             player.InternalSpeed -= speedUp;
             player.InternalSpeed += -player.gravityDir * jumpForce;
             player.controlLockTimer = -1f;
-            player.physBody.MovePosition(transform.position + (player.GetGroundNormal * 0.1f));
+            player.physBody.MovePosition(transform.position + (player.GroundNormal * 0.1f));
             player.GetIsGround = false;
             player.skipNextCol = true;
             isJumping = false;
@@ -268,7 +268,7 @@ public class PlayerColors : MonoBehaviour
 
         if (player.GetIsGround)
         {
-            float slopeUpDot = Vector3.Dot(transform.up, player.GetGroundNormal);
+            float slopeUpDot = Vector3.Dot(transform.up, player.GroundNormal);
             if ((isRolling && player.InternalSpeed.magnitude < rollStopSpeed && slopeUpDot > Extensions.DegCos(player.maxStandAngle)) || isJumping)
                 isRolling = false;
             isJumping = false;
@@ -503,7 +503,7 @@ public class PlayerColors : MonoBehaviour
         float vAcc = Mathf.Min(disDir.magnitude, 1);
 
         Vector3 rgt = Vector3.right;//Quaternion.LookRotation(Vector3.right) * disDir;
-        disDir = Vector3.Cross(rgt, player.GetGroundNormal).normalized;
+        disDir = Vector3.Cross(rgt, player.GroundNormal).normalized;
 
         disDir = transform.InverseTransformDirection(disDir);
         rgt = Quaternion.LookRotation(Vector3.right) * disDir;

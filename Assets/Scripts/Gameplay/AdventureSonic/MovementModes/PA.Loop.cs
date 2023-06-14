@@ -43,7 +43,7 @@ public class MoveMode_Loop
         GUI.Label(new Rect(15, 25 + 15, 250, 100), "position =" + trg.transform.position);
         GUI.Label(new Rect(15, 25 + 15 + 15, 250, 100), "speed magnitude =" + trg.player.physBody.velocity.magnitude.ToString("F2"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15, 250, 100), "fall speed =" + Vector3.Dot(trg.player.InternalSpeed, trg.player.gravityDir).ToString("F2"));
-        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15, 250, 100), "ground angle =" + Vector3.Angle(-trg.player.gravityDir, trg.player.GetGroundNormal));
+        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15, 250, 100), "ground angle =" + Vector3.Angle(-trg.player.gravityDir, trg.player.GroundNormal));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15, 250, 100), "control lock =" + trg.player.controlLockTimer.ToString("F2"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "rota speed calc =" + (Mathf.Max(0, trg.player.InternalSpeed.magnitude - trg.currPms.rotaModeSpeedMin) / (trg.currPms.rotaModeSpeedMax - trg.currPms.rotaModeSpeedMin)).ToString("F3"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "Input raw angle =" + Vector2.Angle(Vector2.up, trg.input.directionRaw).ToString("F2") + ", dir diff: " + dirDif.ToString("F4"));
@@ -73,7 +73,7 @@ public class MoveMode_Loop
         splineRightPos = Vector3.Dot(trg.player.transform.position - newPos, trg.loopKnot.binormal);
         trg.player.physBody.MovePosition(newPos + (trg.loopKnot.binormal * splineRightPos));
         Debug.Log("Starting Loop!");
-        oldSplineDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GetGroundNormal));
+        oldSplineDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GroundNormal));
     }
 
     void OnBuild(PlayerAdventure target, MonoStateMachine<PlayerAdventure> machine)
@@ -165,7 +165,7 @@ public class MoveMode_Loop
 
         trg.transform.BreakDownSpeed(trg.player.InternalSpeed, out Vector3 verticalVelocity, out Vector3 lateralVelocity);
 
-        Vector3 currDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GetGroundNormal));
+        Vector3 currDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GroundNormal));
 
         //Vector3 rgt = Vector3.Cross(Vector3.up, currDir).normalized;
 

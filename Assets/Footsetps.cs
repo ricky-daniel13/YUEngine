@@ -7,7 +7,7 @@ public class Footsetps : MonoBehaviour
     // Start is called before the first frame update
     public AudioSource source;
     public AudioClip[] stepSounds;
-    public AudioClip Jump, Land, Spin, Brake;
+    public AudioClip Jump, Land, Spin, Brake, SpinDash, SpinDashGo;
     void Step(AnimationEvent evt)
     {
         if (evt.animatorClipInfo.weight < 0.5f)

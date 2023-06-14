@@ -71,7 +71,7 @@ public class PAAnimator : MonoBehaviour
 
         fwr = player.globalFacing;
 
-        currUp = Vector3.SmoothDamp(currUp, player.player.GetGroundNormal, ref vscUp, slopeRotaSpeed);
+        currUp = Vector3.SmoothDamp(currUp, player.player.GroundNormal, ref vscUp, player.player.InternalSpeed.magnitude > player.currPms.runSpeed ? slopeRotaSpeed/2 : slopeRotaSpeed);
 
         if (Vector3.Dot(currFwr, fwr) > 0)
             currFwr = Extensions.ProjectDirectionOnPlane(Vector3.RotateTowards(currFwr, fwr, Mathf.Deg2Rad * faceSpeed * Time.deltaTime, 0f), currUp);

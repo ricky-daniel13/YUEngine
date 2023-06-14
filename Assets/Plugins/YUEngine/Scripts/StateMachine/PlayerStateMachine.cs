@@ -58,6 +58,16 @@ namespace YU2.StateMachine
             currState.LateUpdate?.Invoke();
         }
 
+        public bool RequestState(string state)
+        {
+            return currState.RequestState!=null ? currState.RequestState(state) :false;
+        }
+
+        public bool AllowExtMove()
+        {
+            return ((currState.RequestExternalMove != null) ? currState.RequestExternalMove() : false);
+        }
+
         public PlayerStateMachine(T target)
         {
             this.target = target;
@@ -141,6 +151,8 @@ namespace YU2.StateMachine
         public string stateName;
         public delegate void BuildFunc(T target, PlayerStateMachine<T> machine);
         public delegate void TrgFunc(Collider other);
+        public delegate bool RequestStateFunc(string state);
+        public delegate bool RequestMoveFunc();
         public PlayerStateMachine<T> currMachine
         {
             get { return machine; }
@@ -152,6 +164,8 @@ namespace YU2.StateMachine
         }
 
         public BuildFunc Build;
+        public RequestStateFunc RequestState;
+        public RequestMoveFunc RequestExternalMove;
         public Action Begin, End, Update, LateUpdate, ParamChange,
             BeforeCol, BeforePhys, AfterPhys, BeforeUploadSpeed;
 

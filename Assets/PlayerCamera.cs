@@ -25,7 +25,7 @@ public class PlayerCamera : MonoBehaviour
     void LateUpdate()
     {
         playerVelocity = (player.transform.position - lastPlayerPos)/Time.deltaTime;
-        Vector3 correctedPlayerPos =  player.transform.position + player.player.GetGroundNormal * 0.8f;
+        Vector3 correctedPlayerPos =  player.transform.position + player.player.GroundNormal * 0.8f;
         Vector3 localPlayerPos = player.transform.position - currentPosition;
         Vector3 localCameraPos = currentPosition-player.transform.position;
         velocity = Vector3.Project(playerVelocity, Extensions.ProjectDirectionOnPlane(cameraHolder.forward, -player.player.gravityDir));
