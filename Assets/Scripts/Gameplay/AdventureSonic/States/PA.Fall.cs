@@ -30,6 +30,7 @@ public class SonicState_Fall
         state.BeforePhys += BeforePhys;
         state.Build += OnBuild;
         state.Begin += Begin;
+        state.End += End;
 
         return state;
     }
@@ -46,6 +47,10 @@ public class SonicState_Fall
         trg.anim.isGrounded = false;
         trg.player.gravityForce = trg.currPms.gravityForce;
         trg.anim.anim.SetTrigger("toFall");
+    }
+
+    void End(){
+        trg.anim.anim.ResetTrigger("toFall");
     }
 
 

@@ -8,6 +8,7 @@ Shader "Unlit/JumballSolidShader"
         _Spheremap("Reflection", 2D) = "white" {}
         _Spheremap2("Glow", 2D) = "white" {}
         _Pow("Intensity", Float) = 1
+        _PowGlow("Intensity", Float) = 1
     }
     SubShader
     {
@@ -42,6 +43,7 @@ Shader "Unlit/JumballSolidShader"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float _Pow;
+            float _PowGlow;
             sampler2D _Spheremap;
             sampler2D _Spheremap2;
 
@@ -66,7 +68,7 @@ Shader "Unlit/JumballSolidShader"
                 fixed4 colSph2 = tex2D(_Spheremap2, sphUv);
 
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return col + (colSph*_Pow)+(colSph2*_Pow);
+                return col + (colSph*_Pow)+(colSph2*_PowGlow);
             }
             ENDCG
         }

@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class CameraSystem : MonoBehaviour
 {
-    public float radSpeed, radSpeedClose, azimSpeed, azimStickSpeed, elevSpeed, elevSpeedAir, defRad, closeRad, tooCloseRad, defAzim, defElev, defElevJump, lookSpeed, lookHorSpeed,fovSpeed,fovNormal,fovFast,maxAngle,topAngle,angleSpeed, playerOffset, minRunSpeed, maxRunSpeed, upAdjustSpeed,elevPhysSpeed, timeToAuto, autoTransTime, followSpeed, followAmmount, cameraRad;
-    float rad, azim, elev, radVel, azimVel, elevVel,fovVel,currFov, currentUpDot, lookSpeedVel, currAutoTime, autoAmmount,autoVel,frozenRad;
+    public float radSpeed, radSpeedClose, azimSpeed, azimStickSpeed, elevSpeed, elevSpeedAir, defRad, closeRad, tooCloseRad, defAzim, defElev, defElevJump, lookSpeed, lookHorSpeed,fovSpeed,fovNormal,fovFast,maxAngle,topAngle,angleSpeed, playerOffset, minRunSpeed, maxRunSpeed, upAdjustSpeed,elevPhysSpeed, timeToAuto, autoTransTime, followSpeed, followAmmount, cameraRad, heightAllowTime;
+    float rad, azim, elev, radVel, azimVel, elevVel,fovVel,currFov, currentSonicUpDot, currAutoTime, autoAmmount,autoVel,frozenRad,heightAllow,heightAllowVel;
     public bool followOnSlopes,autoAdjustElev,physAdjustElev;
     bool isJumpingState;
     public PlayerAdventure player;
     public Camera cam;
     Matrix4x4 localMat = Matrix4x4.identity;
-    Vector3 currentUp=Vector3.up, currentDir = Vector3.up, upVel, lookVel, lookHorVel,lastPlayerPos, followVel,followOffset;
+    Vector3 currentSonicUp=Vector3.up, currentDir = Vector3.up, upVel, lookVel, lookHorVel,lastPlayerPos, followVel,followOffset;
     RaycastHit cameraCol;
 
     private void Start()
     {
         lastPlayerPos = player.transform.position;
         currFov = fovNormal;
-        currentUpDot = 1;
+        currentSonicUpDot = 1;
         autoAmmount = 1;
     }
     private void LateUpdate() {
@@ -41,25 +41,26 @@ public class CameraSystem : MonoBehaviour
         float groundSpeed = groundVelocity.magnitude;
 
         //Suavizamos el cambio en el arriba de Sonic, y ademas lo limitamos para que solo cambie si supera los 10 grados
-        currentUp = Vector3.SmoothDamp(currentUp, Vector3.Angle(Vector3.up, player.transform.up) < maxAngle ? Vector3.up : player.transform.up, ref upVel, angleSpeed);
-        float currentUpDot = Vector3.Dot(currentUp, Vector3.up);
+        currentSonicUp = Vector3.SmoothDamp(currentSonicUp, Vector3.Angle(Vector3.up, player.transform.up) < maxAngle ? Vector3.up : player.transform.up, ref upVel, angleSpeed);
+        
+        float currentUpDot = Vector3.Dot(currentSonicUp, Vector3.up);
         float dotVelFacing = Vector3.Dot(groundVelocity, cam.transform.forward);
+        float upSpeedDot = Vector3.Dot(Vector3.up, playerVelocity);
+        float realUpDot = Vector3.Dot(player.transform.up, Vector3.up);
+
         //Definimos la matriz local para que sea el centro de Sonic, mas un offset solo en el eje vertical. Si Sonic esta de lado, el offset se queda en ceros, en lugar de moverse a la derecha, ya que eso marea un poco
         Vector3 followTarget = (dotVelFacing > 0 ? groundVelocity : Vector3.ProjectOnPlane(groundVelocity, cam.transform.forward)) * (player.actionState.StateName == "Jump" ? 0 : followAmmount);
         followOffset = Vector3.SmoothDamp(followOffset, followTarget, ref followVel, followSpeed);
-        //Debug.Log("Follow difference: " + (followOffset - followTarget).sqrMagnitude);
-        /*if ((followOffset - followTarget).sqrMagnitude > 0.000001f)
-            followOffset = followTarget;*/
 
         Vector3 focusCenter = player.transform.position + (Vector3.up * currentUpDot * playerOffset) + followOffset;
 
         Vector3 planarFocusCenter = Vector3.ProjectOnPlane(focusCenter, player.transform.up);
         Vector3 planarCamera = Vector3.ProjectOnPlane(cam.transform.position, player.transform.up);
-        float planCamDistance = (planarFocusCenter - planarCamera).magnitude;
+        float planCamDistance = player.player.GetIsGround ? (planarFocusCenter - planarCamera).magnitude : (focusCenter - cam.transform.position).magnitude;
 
 
         currAutoTime -= Time.deltaTime;
-        if(planCamDistance < tooCloseRad && dotVelFacing < 0)
+        if(planCamDistance < tooCloseRad && dotVelFacing < 0 && currAutoTime < 0.1f)
         {
             currAutoTime = 0.1f;
             autoAmmount=0f;
@@ -68,11 +69,13 @@ public class CameraSystem : MonoBehaviour
         float stopLocalFollow = autoAmmount;
         if (player.actionState.StateName == "Jump")
             stopLocalFollow = 0;
+        if(planCamDistance < tooCloseRad && dotVelFacing > 0){
+            stopLocalFollow =1;
+        }
         cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.zero, stopLocalFollow)*Time.deltaTime;
 
 
-        float upSpeedDot = Vector3.Dot(Vector3.up, playerVelocity);
-        float realUpDot = Vector3.Dot(player.transform.up, Vector3.up);
+        
 
         if (player.actionState.StateName == "Jump" && autoAmmount > 0f)
         {
@@ -154,7 +157,7 @@ public class CameraSystem : MonoBehaviour
         if (autoAmmount > 0f)
         {
             ////////////////////////////////////////////////////CHASE CAMERA
-            localMat.SetTRS(focusCenter, Quaternion.FromToRotation(Vector3.up, currentUp), Vector3.one);
+            localMat.SetTRS(focusCenter, Quaternion.FromToRotation(Vector3.up, currentSonicUp), Vector3.one);
             Debug.DrawRay(player.transform.position + followOffset, (Vector3.up * currentUpDot * playerOffset), Color.magenta);
             Debug.DrawRay(player.transform.position, followOffset, Color.magenta);
             localCamPos = localMat.inverse.MultiplyPoint3x4(cam.transform.position);
@@ -185,16 +188,32 @@ public class CameraSystem : MonoBehaviour
             //Si para obtener la altura de un punto a cierto radio y angulo se hace radio por sin del angulo
             //Para obtener el angulo de un punto a cierto radio y altura se hace arcsin de altura entre radio
             float targetElev = elev;
-            if (localCamPos.y < currDefElev || fixHighCamera)
+            if (player.actionState.currentState != "Fall")
                 targetElev = Mathf.Asin(Mathf.Max(Mathf.Min(autoAdjustElev ? currDefElev : localCamPos.y, rad - Mathf.Epsilon), -(rad - Mathf.Epsilon)) / rad);
 
+            heightAllow = Mathf.SmoothDamp(heightAllow, (localCamPos.y < currDefElev ||fixHighCamera)?1:0,ref heightAllowVel, heightAllowTime);
+            
+            Debug.Log("Camera Height: " + localCamPos.y + "/" + currDefElev + ", heightAllow: " + heightAllow);
+
             if (autoAmmount > 0f)
-                elev = Mathf.Lerp(elev, Mathf.Deg2Rad * Mathf.SmoothDampAngle(elev * Mathf.Rad2Deg, targetElev * Mathf.Rad2Deg, ref elevVel, currElevSpeed), autoAmmount);
+                elev = Mathf.Lerp(elev, Mathf.Deg2Rad * Mathf.SmoothDampAngle(elev * Mathf.Rad2Deg, targetElev * Mathf.Rad2Deg, ref elevVel, currElevSpeed), autoAmmount*heightAllow);
 
             //Despues de calcular la nueva posicion, la devolvemos al plano cartesiano
             localCamPos = Extensions.SphericalToCartesian(rad, azim, elev);
             cam.transform.position = localMat.MultiplyPoint3x4(localCamPos);
         }
+
+        /////////////////////////////////////////////////////////////////////////////////////Camera Collision
+
+        Vector3 camDisp = (cam.transform.position - camPrevPos);
+        if (Physics.SphereCast(camPrevPos, cameraRad+0.0001f, camDisp.normalized, out cameraCol, camDisp.magnitude))
+        {
+            //Debug.Log("Collided! " + cameraCol.point + ", campos: " + cam.transform.position);
+            camDisp = Vector3.ProjectOnPlane(camDisp, cameraCol.normal);
+            cam.transform.position= camPrevPos+camDisp;
+            //cam.transform.position =  cameraCol.point + cameraCol.normal * cameraRad;
+        }
+
 
         /////////////////////////////////////////////////////////////////////////////////////CAMERA LOOKAT
         Vector3 toPlayerDir = (focusCenter - cam.transform.position).normalized;
@@ -217,18 +236,6 @@ public class CameraSystem : MonoBehaviour
             autoAmmount = Mathf.SmoothDamp(autoAmmount, 1, ref autoVel, autoTransTime);
         if (1 - autoAmmount < 0.01f)
             autoAmmount = 1;
-
-
-        //cam Collision
-
-        Vector3 camDisp = (cam.transform.position - camPrevPos);
-        if (Physics.SphereCast(camPrevPos, cameraRad, camDisp.normalized, out cameraCol, camDisp.magnitude))
-        {
-            camDisp = Vector3.ProjectOnPlane(camDisp, cameraCol.normal);
-            cam.transform.position = camPrevPos + camDisp;
-        }
-
-
 
     }
 

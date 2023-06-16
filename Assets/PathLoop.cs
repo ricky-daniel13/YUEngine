@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using YU2.Splines;
 
@@ -29,6 +27,10 @@ public class PathLoop : MonoBehaviour
     public Vector2 getEnd { get { return endGround; } }
 
     public float getSwitch { get { return switchPoint; } }
+
+    public bool Is2d { get => is2d;}
+    public bool ExitOnFall { get => exitOnFall;}
+
     public float pathSpeed, pathTest = 0;
     // Update is called once per frame
     private void OnDrawGizmosSelected() {

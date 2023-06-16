@@ -94,6 +94,7 @@ public class MoveMode_Loop
         trg.player.BeforeCol -= PlayerCollision;
         trg.player.AfterPhys -= AfterPhys;
         trg.player.BeforeUploadSpeed -= BeforeUploadSpeed;
+        trg.loopPath = null;
     }
 
     // Update is called once per frame
@@ -114,6 +115,9 @@ public class MoveMode_Loop
             trg.player.transform.position = trg.player.transform.position + (-trg.player.gravityDir * trg.currPms.jumpForce * Time.fixedDeltaTime);
             trg.player.GetIsGround = false;
             trg.player.skipNextCol = true;
+        }
+        if(!trg.player.GetIsGround && trg.loopPath.ExitOnFall){
+            trg.moveState.TransitionTo("FreeRoam");
         }
     }
 

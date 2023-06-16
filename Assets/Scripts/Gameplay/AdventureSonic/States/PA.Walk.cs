@@ -103,7 +103,7 @@ public class SonicState_Walk
         
         float evMaxSpeed = trg.currPms.maxSpeedOverPush.Evaluate(trg.input.mag) * trg.currPms.topSpeed;
 
-        if(trg.player.InternalSpeed.magnitude > trg.currPms.runSpeed)
+        if(trg.player.InternalSpeed.magnitude < trg.currPms.runSpeed)
             trg.mvm.accOnDesiredDir = true;
         else
             trg.mvm.accOnDesiredDir = false;

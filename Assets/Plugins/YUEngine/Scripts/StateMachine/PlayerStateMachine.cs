@@ -60,12 +60,12 @@ namespace YU2.StateMachine
 
         public bool RequestState(string state)
         {
-            return currState.RequestState!=null ? currState.RequestState(state) :false;
+            return currState.RequestState!=null ? currState.RequestState(state) : true;
         }
 
         public bool AllowExtMove()
         {
-            return ((currState.RequestExternalMove != null) ? currState.RequestExternalMove() : false);
+            return ((currState.RequestExternalMove != null) ? currState.RequestExternalMove() : true);
         }
 
         public PlayerStateMachine(T target)

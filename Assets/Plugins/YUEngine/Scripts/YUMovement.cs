@@ -69,7 +69,7 @@ public class YUMovement
             // tighter control.
             tangentVelocity = Vector3.MoveTowards(tangentVelocity, Vector3.zero, inTangDrag * wrongDelta * input.mag);
             Debug.DrawRay(transform.position + transform.up, transform.TransformDirection(tangentVelocity), Color.red, Time.fixedDeltaTime);
-            Debug.DrawRay(transform.position + transform.up, transform.TransformDirection(input.playerDir), Color.blue, Time.fixedDeltaTime);
+            Debug.DrawRay(transform.position + transform.up, transform.TransformDirection(normalVelocity), Color.blue, Time.fixedDeltaTime);
 
             player.InternalSpeed = transform.TransformDirection(normalVelocity + tangentVelocity + vSpeed);
             // Compose local velocity back and compute velocity back into the Global frame.
@@ -97,7 +97,7 @@ public class YUMovement
             transform.BreakDownSpeed(player.InternalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
             // Fetch velocity in the Player's local frame, decompose into lateral and vertical
             // motion, and decompose lateral motion further into normal and tangential components.
-            Debug.DrawRay(transform.position, transform.TransformDirection(inputDir), Color.black, Time.fixedDeltaTime);
+            //Debug.DrawRay(transform.position, transform.TransformDirection(inputDir), Color.black, Time.fixedDeltaTime);
 
             float normalSpeed = Vector3.Dot(hSpeed, inputDir);
             float dirDif = Vector3.Dot(hSpeed.normalized, inputDir);
@@ -105,13 +105,13 @@ public class YUMovement
             Quaternion toRota = Quaternion.LookRotation(inputDir);  //Get the target rotation
             float currSpeed = hSpeed.magnitude;
 
-            bool canTurn = (dirDif > (currSpeed < runSpeed ? -2 : brakeAngle));
+            bool canTurn = (dirDif > brakeAngle);
 
             Vector3 newDir = Quaternion.RotateTowards(currRota, (canTurn && !isBraking) ? toRota : currRota, rotaSpeed * Time.fixedDeltaTime) * Vector3.forward;
 
             currSpeed -= Mathf.Abs((currSpeed - Vector3.Dot(newDir, hSpeed))) * rotaDecelFactor;
 
-            if (normalSpeed < 0 && ((!(canTurn))||isBraking) )
+            if (normalSpeed < 0 && (!canTurn||isBraking))
             {
                 //Debug.Log("Is braking? " + isBraking + ",is breakspeed " + (!isBraking && currSpeed > runSpeed));
                 if (!isBraking && currSpeed > runSpeed)
@@ -122,8 +122,9 @@ public class YUMovement
 
             if (accOnDesiredDir)
             {
-                hSpeed = (newDir * currSpeed) + inputDir * ((!canTurn ? inDcc : (currSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime);
-                Debug.DrawRay(transform.position, transform.TransformDirection(inputDir * ((isBraking ? inDcc : (currSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime)), Color.magenta, Time.fixedDeltaTime);
+                hSpeed = (newDir * currSpeed) + inputDir * ((isBraking ? inDcc : (normalSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime);
+                Debug.DrawRay(transform.position, transform.TransformVector((newDir * currSpeed)), Color.red, Time.fixedDeltaTime);
+                Debug.DrawRay(transform.position, transform.TransformVector(inputDir * ((isBraking ? inDcc : (currSpeed < inMaxSpeed ? inAcc : 0)) * Time.fixedDeltaTime)), Color.blue, Time.fixedDeltaTime);
             }
             else
             {
@@ -136,6 +137,7 @@ public class YUMovement
                     currSpeed += inAcc * Time.fixedDeltaTime;
                 }
                 hSpeed = (newDir * currSpeed);
+                Debug.DrawRay(transform.position, transform.TransformVector((newDir * currSpeed)), Color.blue, Time.fixedDeltaTime);
             }
 
             //Debug.DrawRay(transform.position, transform.TransformDirection(newDir), Color.green, Time.fixedDeltaTime);

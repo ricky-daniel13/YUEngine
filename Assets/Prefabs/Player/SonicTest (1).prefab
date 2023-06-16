@@ -256,7 +256,7 @@ MonoBehaviour:
   currPms: {fileID: 0}
   threeD: {fileID: 11400000, guid: f5e02f4833297604fa0713f3dc4dacd9, type: 2}
   spinDashData:
-    acumPerSecond: 10
+    acumPerSecond: 15
     minRelease: 10
     maxRelease: 60
     rotationSpeed: 100
@@ -547,7 +547,7 @@ MonoBehaviour:
   azimSpeed: 5
   azimStickSpeed: 180
   elevSpeed: 0.1
-  elevSpeedAir: 0.5
+  elevSpeedAir: 0.65
   defRad: 4.5
   closeRad: 4
   tooCloseRad: 1
@@ -571,7 +571,7 @@ MonoBehaviour:
   autoTransTime: 0.4
   followSpeed: 0.1
   followAmmount: 0.03125
-  cameraRad: 0.25
+  cameraRad: 0.35
   followOnSlopes: 1
   autoAdjustElev: 1
   physAdjustElev: 0
@@ -834,7 +834,7 @@ MonoBehaviour:
   player: {fileID: 874118998128462732}
   faceSpeed: 500
   rotaSpeed: 600
-  slopeRotaSpeed: 0.16666669
+  slopeRotaSpeed: 0.25
   inputChangeSpeed: 5
   VertOffset: -0.05
   waitFramesToLand: 3
