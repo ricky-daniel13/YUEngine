@@ -81,6 +81,7 @@ namespace YU2
                 averageFloorNor = value;
                 newNormal = value;
                 forceNormal = true;
+                Debug.Log("Normal setted! " + Time.deltaTime);
             }
         }
 
@@ -110,6 +111,8 @@ namespace YU2
             set { finalSpeed = value;
             }
         }
+
+        public Vector3 ConnDiff { get => connDiff;}
 
         int keepRotation;
 
@@ -207,10 +210,10 @@ namespace YU2
                         averageWallPos *= 0.5f;
                     }
                     Vector3 flatWallCol = Extensions.ProjectDirectionOnPlane(col.GetContact(i).normal, transform.up);
-                    float speedToWall = Vector3.Dot(InternalSpeed, -flatWallCol);
+                    float speedToWall = Vector3.Dot(finalSpeed, -flatWallCol);
                     //Debug.DrawRay(averageWallPos, col.GetContact(i).normal, Color.magenta, Time.fixedDeltaTime);
                     if (stopOnWall && speedToWall > 0)
-                        InternalSpeed += flatWallCol * speedToWall;
+                        finalSpeed += flatWallCol * speedToWall;
 
                     wallCount++;
 
@@ -227,6 +230,7 @@ namespace YU2
 
         private void FixedUpdate()
         {
+            //Debug.Log("physvel: " + physBody.velocity.sqrMagnitude + ", finsoeed: " + finalSpeed.sqrMagnitude);
             BeforeCol?.Invoke();
             if (skipNextCol)
             {
@@ -248,7 +252,13 @@ namespace YU2
 
             BeforeUploadSpeed?.Invoke();
             if (doSpeedUpload)
-                physBody.velocity = InternalSpeed;
+                physBody.velocity = finalSpeed;
+            if (finalSpeed.sqrMagnitude == 0)
+            {
+                physBody.Sleep();
+                //Debug.Log("Frozen!");
+            }
+            //Debug.Log("physvel: " + physBody.velocity.sqrMagnitude + ", connDif: " + connDiff);
             if(connBody)
                 transform.position+=connDiff;
             AfterUploadSpeed?.Invoke();
@@ -266,10 +276,18 @@ namespace YU2
 
                 UpdateConnection();
 
+                if (forceNormal)
+                {
+                    averageFloorNor = newNormal;
+                    newNormal = Vector3.zero;
+                    forceNormal = false;
+                }
+
                 if (colCount > 0)
                 {
                     if (grounded)
                     {
+                        //Debug.Log("Normal changed?: " + (oldNormal != averageFloorNor));
                         finalSpeed = Quaternion.FromToRotation(oldNormal, averageFloorNor) * finalSpeed;
                     }
                     willGround = true;
@@ -278,29 +296,17 @@ namespace YU2
                     willGround = TryGround();
             }
 
-            if (forceNormal)
-            {
-                averageFloorNor = newNormal;
-                newNormal = Vector3.zero;
-                forceNormal = false;
-            }
-
-            if(willGround && grounded)
-            {
-                if (slopeSpeedAdjust)
-                    finalSpeed = Quaternion.FromToRotation(oldNormal, averageFloorNor) * finalSpeed;
-            }
-
             grounded = willGround;
 
             if (grounded)
             {
-                slopeVector = Extensions.ProjectDirectionOnPlane(gravityDir, averageFloorNor);
+                slopeVector = Vector3.Cross(Vector3.Cross(averageFloorNor, gravityDir), averageFloorNor).normalized;
+                Debug.DrawRay(transform.position, slopeVector);
 
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, averageFloorNor);
                 oldNormal = averageFloorNor;
                 keepRotation = 0;
-                if (controlLockTimer >= 0 && doControlLock)
+                if (controlLockTimer > 0 && doControlLock)
                 {
                     controlLockTimer -= Time.fixedDeltaTime;
                 }
@@ -322,6 +328,7 @@ namespace YU2
 
         void NormalPhysics()
         {
+           // Debug.Log("starting phys");
             if (!gravBasedSlope)
                 DoSlopes();
             else
@@ -339,13 +346,20 @@ namespace YU2
                     DoAirFriction(ref hSpeed, ref vSpeed);
             }
 
+            //Debug.Log("Speed after friction: " + hSpeed.sqrMagnitude + ", " + vSpeed.sqrMagnitude);
+
             if (doGravity)
                 DoGravity(ref hSpeed, ref vSpeed);
 
-            finalSpeed = transform.TransformDirection(hSpeed + vSpeed);
+            //Debug.Log("Speed after grav: " + hSpeed.sqrMagnitude + ", " + vSpeed.sqrMagnitude);
 
-            if (stopOnWall)
-                DoStopOnWall();
+            finalSpeed = transform.TransformVector(hSpeed + vSpeed);
+
+            //Debug.Log("Speed after trans: " + finalSpeed.sqrMagnitude);
+
+            if (stopOnCeil)
+                DoStopOnCei();
+            //Debug.Log("Ending phys");
         }
 
         void UpdateConnection()
@@ -439,32 +453,25 @@ namespace YU2
             return false;
         }
 
-        void DoStopOnWall()
+        void DoStopOnCei()
         {
             if (ceilCount > 0)
             {
-                float dotFromCei = Vector3.Dot(InternalSpeed, -averageCeiNor);
+                float dotFromCei = Vector3.Dot(finalSpeed, -averageCeiNor);
                 if (dotFromCei > 0)
-                    InternalSpeed += averageCeiNor * dotFromCei;
+                    finalSpeed += averageCeiNor * dotFromCei;
             }
         }
 
         void DoFriction(ref Vector3 hSpeed, ref Vector3 vSpeed)
         {
-            //transform.BreakDownSpeed(finalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
-            if (hSpeed.magnitude > 0)
-            {
-                hSpeed = Vector3.MoveTowards(hSpeed, Vector3.zero, frc * Time.fixedDeltaTime);
-            }
-            else
-            {
-                hSpeed = Vector3.zero;
-            }
+            //Debug.Log("speed: " + hSpeed.sqrMagnitude + ", " + vSpeed.sqrMagnitude + "speed to remove: " + frc * Time.fixedDeltaTime);
+            hSpeed = Vector3.MoveTowards(hSpeed, Vector3.zero, frc * Time.fixedDeltaTime);
         }
 
         void DoAirFriction(ref Vector3 hSpeed, ref Vector3 vSpeed)
         {
-            float vMagn = Vector3.Dot(InternalSpeed, -gravityDir);
+            float vMagn = Vector3.Dot(vSpeed, transform.InverseTransformVector(-gravityDir));
             if (hSpeed.magnitude > airDragHrLimit && (0 < vMagn && vMagn < airDragLimit))
             {
                 //float dragCalc = Mathf.Pow(hSpeed.magnitude, 2) * drag; // The variable 
@@ -478,19 +485,20 @@ namespace YU2
         {
             // based on-> https://stackoverflow.com/a/4372760 
             float slopeUpDot = Vector3.Dot(-gravityDir, averageFloorNor);
-            //Debug.Log("slopeupdot: " + slopeUpDot + "/" + cosMinAngle + ", timer: " + controlLockTimer);
+            //Debug.Log("slopeupdot: " + slopeUpDot + "/" + cosMinAngle + ", timer: " + controlLockTimer + " speed to add: " + (slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime);
             if (slopeUpDot < cosMinAngle || controlLockTimer > 0)
             {
                 Debug.DrawRay(transform.position, slopeVector, Color.red);
-                InternalSpeed += slopeVector * (slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
+                finalSpeed += slopeVector * (slopeFactor * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
             }
             DoSlopeSlip(slopeUpDot);
         }
 
         void DoSlopeSlip(float slopeUpDot)
         {
-            if (InternalSpeed.magnitude < slipSpeedLimit && controlLockTimer < 0 && slopeUpDot < cosSlipAngle)
+            if (finalSpeed.magnitude < slipSpeedLimit && controlLockTimer <= 0 && slopeUpDot < cosSlipAngle)
             {
+                Debug.Log("i FELT!");
                 onSlopeSlip?.Invoke();
                 grounded = false;
                 colCount = 0;
@@ -516,7 +524,7 @@ namespace YU2
 
                 //Debug.Log("DownGrav = " + downGrav.magnitude + " slope = " + slope.magnitude);
 
-                InternalSpeed += slope;// * (slp * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
+                finalSpeed += slope;// * (slp * (Mathf.Abs(Extensions.DegSin(Vector3.Angle(-gravityDir, averageFloorNor))))) * Time.fixedDeltaTime;
             }
 
             DoSlopeSlip(slopeUpDot);
@@ -524,12 +532,12 @@ namespace YU2
 
         void DoGravity(ref Vector3 hSpeed, ref Vector3 vSpeed)
         {
-
+            //Debug.Log("Received speed: " + hSpeed.sqrMagnitude + ", and " + vSpeed.sqrMagnitude);
             if (grounded)
             {
                 vSpeed = Vector3.zero;
             }
-            else if (Vector3.Dot(InternalSpeed, gravityDir) < (maxGravityForce))
+            else if (Vector3.Dot(vSpeed, transform.InverseTransformVector(gravityDir)) < (maxGravityForce))
             {
                 transform.BreakDownSpeed(gravityDir * gravityForce * Time.fixedDeltaTime, out Vector3 gravV, out Vector3 gravH);
                 hSpeed += gravH;

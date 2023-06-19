@@ -71,12 +71,16 @@ public class SonicState_Jump
 
     void Update()
     {
+        float minSpeed;
+        Vector3 speedUp = Vector3.Project(trg.player.InternalSpeed, -trg.player.gravityDir);
+        minSpeed = Mathf.Max(speedUp.magnitude, (trg.player.InternalSpeed - speedUp).magnitude);
         if (!Input.GetButton("Jump") && Vector3.Dot(trg.player.InternalSpeed, -trg.player.gravityDir) > trg.currPms.lowJumpSpeed && Vector3.Dot(trg.player.InternalSpeed, -trg.player.gravityDir) > 0)
         {
-            Vector3 speedUp = Vector3.Project(trg.player.InternalSpeed, -trg.player.gravityDir);
             trg.player.InternalSpeed -= speedUp;
             trg.player.InternalSpeed += speedUp.normalized * trg.currPms.lowJumpSpeed;
         }
+
+        trg.anim.OverridenSpeed = Mathf.Max(minSpeed, trg.anim.minJumpSpeed);
     }
 
     void BeforePhys()

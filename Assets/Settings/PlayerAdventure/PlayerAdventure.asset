@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: PlayerAdventure
   m_EditorClassIdentifier: 
   tryGroundDistance: 0.5
-  tryGroundDistanceFast: 0.25
+  tryGroundDistanceFast: 0.35
   InteractionLayer:
     serializedVersion: 2
     m_Bits: 128
   acc: 12
   dcc: 45
-  frc: 8
+  frc: 10
   air: 14
   topSpeed: 26
   runSpeed: 15
@@ -108,7 +108,7 @@ MonoBehaviour:
   tangentDrag: 40
   jumpTangentDrag: 16
   rotaModeSpeed: 450
-  rotaModeSpeedFast: 120
+  rotaModeSpeedFast: 140
   rotaModeSpeedMax: 26
   rotaModeSpeedMin: 15
   rotaModeSpdMul: 4

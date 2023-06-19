@@ -99,5 +99,6 @@ public class SonicState_SpinDash
         acumSpeed += data.acumPerSecond * Time.deltaTime;
         acumSpeed=Mathf.Min(acumSpeed, data.maxRelease);
         Debug.Log("acumSpeed=" + acumSpeed);
+        trg.anim.OverridenSpeed = acumSpeed;
     }
 }

@@ -33,7 +33,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: airland
+      name: hop_land
       takeName: take
       internalID: -9112172920366980380
       firstFrame: 0

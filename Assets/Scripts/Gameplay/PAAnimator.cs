@@ -17,12 +17,18 @@ public class PAAnimator : MonoBehaviour
     public float slopeRotaSpeed;
     public float inputChangeSpeed;
     public float VertOffset;
+    public float minJumpSpeed;
     public int waitFramesToLand = 5;
 
     public bool isGrounded;
 
     public Vector3 desiredSpeed;
     public Vector3 currDesired;
+    bool isOverridenSpeed = false;
+    private float overridenSpeed = 1;
+
+    public float OverridenSpeed { set { overridenSpeed=value; isOverridenSpeed = true; } }
+
     void Start()
     {
         idSpeed = Animator.StringToHash("speed");
@@ -43,7 +49,7 @@ public class PAAnimator : MonoBehaviour
             framesToLand = waitFramesToLand;
         }
 
-        anim.SetFloat(idSpeed, player.player.InternalSpeed.magnitude);
+        anim.SetFloat(idSpeed, isOverridenSpeed ? overridenSpeed : player.player.InternalSpeed.magnitude);
         anim.SetFloat(idvSpeed, Vector3.Dot(player.player.InternalSpeed, -player.player.gravityDir));
         anim.SetBool(idIsGround, framesToLand > 0);
         /*if(player.player.InternalSpeed.sqrMagnitude > 0.01)
@@ -90,6 +96,6 @@ public class PAAnimator : MonoBehaviour
         
         anim.SetFloat(idHMove, currDesired.x);
         anim.SetFloat(idVMove, currDesired.z);
-
+        isOverridenSpeed = false;
     }
 }

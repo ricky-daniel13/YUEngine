@@ -552,15 +552,15 @@ MonoBehaviour:
   closeRad: 4
   tooCloseRad: 1
   defAzim: 0
-  defElev: 0.6
+  defElev: 0.7
   defElevJump: 3
   lookSpeed: 0.05
   lookHorSpeed: 0
   fovSpeed: 0.2
   fovNormal: 50
   fovFast: 50
-  maxAngle: 10
-  topAngle: 40
+  maxAngle: 12
+  topAngle: 35
   angleSpeed: 0.2
   playerOffset: 0.85
   minRunSpeed: 15
@@ -572,6 +572,7 @@ MonoBehaviour:
   followSpeed: 0.1
   followAmmount: 0.03125
   cameraRad: 0.35
+  heightAllowTime: 0.2
   followOnSlopes: 1
   autoAdjustElev: 1
   physAdjustElev: 0
@@ -586,6 +587,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2940945436782267786}
+  - component: {fileID: 1858870846}
   m_Layer: 0
   m_Name: SonicTest (1)
   m_TagString: Untagged
@@ -615,6 +617,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1858870846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482506402977050399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 774612bdfefdc7b43bc0b4af4675e99c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PA: {fileID: 874118998128462732}
+  camera: {fileID: 1915301887404134218}
+  deathDistance: -25
 --- !u!1001 &874118996631356587
 PrefabInstance:
   m_ObjectHideFlags: 0

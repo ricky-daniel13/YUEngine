@@ -13,7 +13,7 @@ public class CameraSystem : MonoBehaviour
     Matrix4x4 localMat = Matrix4x4.identity;
     Vector3 currentSonicUp=Vector3.up, currentDir = Vector3.up, upVel, lookVel, lookHorVel,lastPlayerPos, followVel,followOffset;
     RaycastHit cameraCol;
-
+    public LayerMask cameraLayers;
     private void Start()
     {
         lastPlayerPos = player.transform.position;
@@ -33,7 +33,7 @@ public class CameraSystem : MonoBehaviour
 
 
         //Calculamos la velocidad del jugador. Ya que es interpolada, nos dara un mejor resultado.
-        Vector3 playerVelocity = (player.transform.position - lastPlayerPos) / Time.deltaTime;
+        Vector3 playerVelocity = (player.transform.position - lastPlayerPos - player.player.ConnDiff) / Time.deltaTime;
         lastPlayerPos = player.transform.position;
 
         //Calculamos la velocidad acorde al eje del piso
@@ -59,6 +59,7 @@ public class CameraSystem : MonoBehaviour
         float planCamDistance = player.player.GetIsGround ? (planarFocusCenter - planarCamera).magnitude : (focusCenter - cam.transform.position).magnitude;
 
 
+
         currAutoTime -= Time.deltaTime;
         if(planCamDistance < tooCloseRad && dotVelFacing < 0 && currAutoTime < 0.1f)
         {
@@ -73,6 +74,8 @@ public class CameraSystem : MonoBehaviour
             stopLocalFollow =1;
         }
         cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.zero, stopLocalFollow)*Time.deltaTime;
+
+        cam.transform.position += player.player.ConnDiff;
 
 
         
@@ -193,7 +196,7 @@ public class CameraSystem : MonoBehaviour
 
             heightAllow = Mathf.SmoothDamp(heightAllow, (localCamPos.y < currDefElev ||fixHighCamera)?1:0,ref heightAllowVel, heightAllowTime);
             
-            Debug.Log("Camera Height: " + localCamPos.y + "/" + currDefElev + ", heightAllow: " + heightAllow);
+            //Debug.Log("Camera Height: " + localCamPos.y + "/" + currDefElev + ", heightAllow: " + heightAllow);
 
             if (autoAmmount > 0f)
                 elev = Mathf.Lerp(elev, Mathf.Deg2Rad * Mathf.SmoothDampAngle(elev * Mathf.Rad2Deg, targetElev * Mathf.Rad2Deg, ref elevVel, currElevSpeed), autoAmmount*heightAllow);
@@ -206,7 +209,7 @@ public class CameraSystem : MonoBehaviour
         /////////////////////////////////////////////////////////////////////////////////////Camera Collision
 
         Vector3 camDisp = (cam.transform.position - camPrevPos);
-        if (Physics.SphereCast(camPrevPos, cameraRad+0.0001f, camDisp.normalized, out cameraCol, camDisp.magnitude))
+        if (Physics.SphereCast(camPrevPos, cameraRad+0.0001f, camDisp.normalized, out cameraCol, camDisp.magnitude, cameraLayers))
         {
             //Debug.Log("Collided! " + cameraCol.point + ", campos: " + cam.transform.position);
             camDisp = Vector3.ProjectOnPlane(camDisp, cameraCol.normal);
