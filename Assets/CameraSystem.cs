@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraSystem : MonoBehaviour
 {
-    public float radSpeed, radSpeedClose, azimSpeed, azimStickSpeed, elevSpeed, elevSpeedAir, defRad, closeRad, tooCloseRad, defAzim, defElev, defElevJump, lookSpeed, lookHorSpeed,fovSpeed,fovNormal,fovFast,maxAngle,topAngle,angleSpeed, playerOffset, minRunSpeed, maxRunSpeed, upAdjustSpeed,elevPhysSpeed, timeToAuto, autoTransTime, followSpeed, followAmmount, cameraRad, heightAllowTime;
+    public float radSpeed, radSpeedClose, azimSpeed, azimStickSpeed, elevSpeed, elevSpeedAir, defRad, closeRad, tooCloseRad, defAzim, defElev, defElevJump, lookSpeed, lookHorSpeed,fovSpeed,fovNormal,fovFast,maxAngle,topAngle,angleSpeed, playerOffset, minRunSpeed, maxRunSpeed, upAdjustSpeed,elevPhysSpeed, timeToAuto, autoTransTime, followSpeed, followAmmount, cameraRad, heightAllowTime, manualAdjustTime, cameraFlattenAmmount;
     float rad, azim, elev, radVel, azimVel, elevVel,fovVel,currFov, currentSonicUpDot, currAutoTime, autoAmmount,autoVel,frozenRad,heightAllow,heightAllowVel;
     public bool followOnSlopes,autoAdjustElev,physAdjustElev;
     bool isJumpingState;
@@ -14,6 +14,27 @@ public class CameraSystem : MonoBehaviour
     Vector3 currentSonicUp=Vector3.up, currentDir = Vector3.up, upVel, lookVel, lookHorVel,lastPlayerPos, followVel,followOffset;
     RaycastHit cameraCol;
     public LayerMask cameraLayers;
+
+
+    private float userFov = 50.0f;
+    bool userDinFov = false;
+    bool userLookAhead = true;
+    public float rightMargin;
+    public Rect AlignRight(Rect rect){
+        rect.x = Screen.width - rect.width - rect.x;
+        return rect;
+    }
+    
+    void OnGUI () 
+    {
+        GUI.Box(AlignRight(new Rect (0, 20, 200,105)), "");
+        GUI.Label(AlignRight(new Rect (45, 25, 100, 25)), "Angulo de vision");
+        userFov = GUI.HorizontalSlider (AlignRight(new Rect (45, 50, 100, 25)), userFov, 40.0f, 70.0f);
+        GUI.Label(AlignRight(new Rect (5, 50, 35, 25)), userFov.ToString("F02"));
+        //GUI.Label(AlignRight(new Rect (50, 75, 100, 25)), "Angulo dinamico: ");
+        userDinFov = GUI.Toggle(AlignRight(new Rect (5, 75, 145, 25)), userDinFov, "Angulo dinamico?");
+        userLookAhead = GUI.Toggle(AlignRight(new Rect (10, 100, 180, 25)), userLookAhead, "Seguir adelante de Sonic?");
+    }
     private void Start()
     {
         lastPlayerPos = player.transform.position;
@@ -49,7 +70,7 @@ public class CameraSystem : MonoBehaviour
         float realUpDot = Vector3.Dot(player.transform.up, Vector3.up);
 
         //Definimos la matriz local para que sea el centro de Sonic, mas un offset solo en el eje vertical. Si Sonic esta de lado, el offset se queda en ceros, en lugar de moverse a la derecha, ya que eso marea un poco
-        Vector3 followTarget = (dotVelFacing > 0 ? groundVelocity : Vector3.ProjectOnPlane(groundVelocity, cam.transform.forward)) * (player.actionState.StateName == "Jump" ? 0 : followAmmount);
+        Vector3 followTarget = (dotVelFacing > 0 ? groundVelocity : Vector3.Lerp(groundVelocity,Vector3.ProjectOnPlane(groundVelocity, cam.transform.forward),cameraFlattenAmmount)) * (player.actionState.StateName == "Jump" || !userLookAhead ? 0 : followAmmount);
         followOffset = Vector3.SmoothDamp(followOffset, followTarget, ref followVel, followSpeed);
 
         Vector3 focusCenter = player.transform.position + (Vector3.up * currentUpDot * playerOffset) + followOffset;
@@ -57,7 +78,9 @@ public class CameraSystem : MonoBehaviour
         Vector3 planarFocusCenter = Vector3.ProjectOnPlane(focusCenter, player.transform.up);
         Vector3 planarCamera = Vector3.ProjectOnPlane(cam.transform.position, player.transform.up);
         float planCamDistance = player.player.GetIsGround ? (planarFocusCenter - planarCamera).magnitude : (focusCenter - cam.transform.position).magnitude;
-
+        
+        Debug.DrawRay(player.transform.position + followOffset, (Vector3.up * currentUpDot * playerOffset), Color.magenta);
+        Debug.DrawRay(player.transform.position, followOffset, Color.magenta);
 
 
         currAutoTime -= Time.deltaTime;
@@ -70,7 +93,7 @@ public class CameraSystem : MonoBehaviour
         float stopLocalFollow = autoAmmount;
         if (player.actionState.StateName == "Jump")
             stopLocalFollow = 0;
-        if(planCamDistance < tooCloseRad && dotVelFacing > 0){
+        if(planCamDistance < closeRad && dotVelFacing > 0){
             stopLocalFollow =1;
         }
         cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.zero, stopLocalFollow)*Time.deltaTime;
@@ -110,7 +133,7 @@ public class CameraSystem : MonoBehaviour
         }
 
         //Calculamos el FOV actual en base a la velocidad minima y maxima.
-        currFov = Mathf.SmoothDamp(currFov, Mathf.Lerp(fovNormal, fovFast, Mathf.Max(0, groundSpeed - minRunSpeed) / (maxRunSpeed-minRunSpeed)), ref fovVel, fovSpeed);
+        currFov = Mathf.SmoothDamp(currFov, Mathf.Lerp(userFov, userDinFov ? userFov + 15 : userFov, Mathf.Max(0, groundSpeed - minRunSpeed) / (maxRunSpeed-minRunSpeed)), ref fovVel, fovSpeed);
         cam.fieldOfView = currFov;
 
         //////////////////////////////////////////////// Camera user rotation
@@ -123,37 +146,39 @@ public class CameraSystem : MonoBehaviour
         azim = sphereCoord.y;
         elev = sphereCoord.z;
 
-        float xMove = Input.GetAxis("Mouse X");
-        float yMove = Input.GetAxis("Mouse Y");
-        azim += Mathf.Deg2Rad * (-xMove * azimSpeed);
-        elev += Mathf.Deg2Rad * (-yMove * azimSpeed);
+        if(Cursor.lockState != CursorLockMode.None){
+            float xMove = Input.GetAxis("Mouse X");
+            float yMove = Input.GetAxis("Mouse Y");
+            azim += Mathf.Deg2Rad * (-xMove * azimSpeed);
+            elev += Mathf.Deg2Rad * (-yMove * azimSpeed);
 
-        bool moved = xMove != 0 || yMove != 0;
+            bool moved = xMove != 0 || yMove != 0;
 
-        xMove = Input.GetAxis("CamStickX");
-        yMove = Input.GetAxis("CamStickY");
-        azim += Mathf.Deg2Rad * (-xMove * azimStickSpeed * Time.deltaTime);
-        elev += Mathf.Deg2Rad * (yMove * azimStickSpeed * Time.deltaTime);
+            xMove = Input.GetAxis("CamStickX");
+            yMove = Input.GetAxis("CamStickY");
+            azim += Mathf.Deg2Rad * (-xMove * azimStickSpeed * Time.deltaTime);
+            elev += Mathf.Deg2Rad * (yMove * azimStickSpeed * Time.deltaTime);
 
-        moved |= xMove != 0 || yMove != 0;
+            moved |= xMove != 0 || yMove != 0;
 
 
-        if (moved)
-        {
-            if (autoAmmount > 0)
-                frozenRad = rad;
-            autoVel = 0;
-            currAutoTime = timeToAuto;
-            autoAmmount = 0;
-            isJumpingState = false;
+            if (moved)
+            {
+                if (autoAmmount > 0)
+                    frozenRad = rad;
+                autoVel = 0;
+                currAutoTime = timeToAuto;
+                autoAmmount = 0;
+                isJumpingState = false;
+            }
+
+            if (autoAmmount < 0.9f && rad > defRad)
+                rad = defRad;
         }
-
-        if (autoAmmount < 0.9f && rad > defRad)
-            rad = defRad;
 
         localCamPos = Extensions.SphericalToCartesian(rad, azim, elev);
         cam.transform.position = localMat.MultiplyPoint3x4(localCamPos);
-
+        
 
 
 
@@ -161,8 +186,7 @@ public class CameraSystem : MonoBehaviour
         {
             ////////////////////////////////////////////////////CHASE CAMERA
             localMat.SetTRS(focusCenter, Quaternion.FromToRotation(Vector3.up, currentSonicUp), Vector3.one);
-            Debug.DrawRay(player.transform.position + followOffset, (Vector3.up * currentUpDot * playerOffset), Color.magenta);
-            Debug.DrawRay(player.transform.position, followOffset, Color.magenta);
+            
             localCamPos = localMat.inverse.MultiplyPoint3x4(cam.transform.position);
 
             //Obtenemos la posicion de la camara en coordenadas esfericas

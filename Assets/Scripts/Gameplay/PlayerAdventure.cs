@@ -118,11 +118,9 @@ public class PlayerAdventure : MonoBehaviour
         moveState.DoUpdate();
         actionState.DoUpdate();
 
-        if (Input.GetKey(KeyCode.Escape))
-            Cursor.lockState = CursorLockMode.None;
-
-        if (Input.GetMouseButton(0))
-                Cursor.lockState = CursorLockMode.Locked;
+        if (Input.GetKey(KeyCode.Escape)){
+            Cursor.lockState = (Cursor.lockState == CursorLockMode.None ? CursorLockMode.Locked : CursorLockMode.None);
+        }
         
     }
 
