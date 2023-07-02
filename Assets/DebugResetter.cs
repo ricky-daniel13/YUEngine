@@ -13,7 +13,7 @@ public class DebugResetter : MonoBehaviour
     {
         if(PA.transform.position.y < deathDistance){
             PA.transform.position=this.transform.position;
-            PA.player.InternalSpeed = Vector3.zero;
+            PA.physPly.InternalSpeed = Vector3.zero;
             camera.transform.position = this.transform.position - (this.transform.forward * -5);
         }
     }

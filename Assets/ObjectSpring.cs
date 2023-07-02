@@ -26,16 +26,16 @@ public class ObjectSpring : MonoBehaviour
             {
                 pa.actionState.TransitionTo("Fall");
                 if (Additive)
-                    pa.player.InternalSpeed += transform.forward * Speed;
+                    pa.physPly.InternalSpeed += transform.forward * Speed;
                 else
                 {
-                    pa.player.InternalSpeed = transform.forward * Speed;
+                    pa.physPly.InternalSpeed = transform.forward * Speed;
                 }
 
-                pa.player.transform.position=pa.transform.position += (transform.forward) * 0.2f;
+                pa.physPly.transform.position=pa.transform.position += (transform.forward) * 0.2f;
                 //trg.player.transform.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
-                pa.player.GetIsGround = false;
-                pa.player.skipNextCol = true;
+                pa.physPly.GetIsGround = false;
+                pa.physPly.skipNextCol = true;
 
                 dashEffector.PlayOneShot(dashSound);
             }

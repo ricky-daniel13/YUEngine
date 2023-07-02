@@ -54,7 +54,7 @@ public class CameraSystem : MonoBehaviour
 
 
         //Calculamos la velocidad del jugador. Ya que es interpolada, nos dara un mejor resultado.
-        Vector3 playerVelocity = (player.transform.position - lastPlayerPos - player.player.ConnDiff) / Time.deltaTime;
+        Vector3 playerVelocity = (player.transform.position - lastPlayerPos - player.physPly.ConnDiff) / Time.deltaTime;
         lastPlayerPos = player.transform.position;
 
         //Calculamos la velocidad acorde al eje del piso
@@ -77,7 +77,7 @@ public class CameraSystem : MonoBehaviour
 
         Vector3 planarFocusCenter = Vector3.ProjectOnPlane(focusCenter, player.transform.up);
         Vector3 planarCamera = Vector3.ProjectOnPlane(cam.transform.position, player.transform.up);
-        float planCamDistance = player.player.GetIsGround ? (planarFocusCenter - planarCamera).magnitude : (focusCenter - cam.transform.position).magnitude;
+        float planCamDistance = player.physPly.GetIsGround ? (planarFocusCenter - planarCamera).magnitude : (focusCenter - cam.transform.position).magnitude;
         
         Debug.DrawRay(player.transform.position + followOffset, (Vector3.up * currentUpDot * playerOffset), Color.magenta);
         Debug.DrawRay(player.transform.position, followOffset, Color.magenta);
@@ -98,7 +98,7 @@ public class CameraSystem : MonoBehaviour
         }
         cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.zero, stopLocalFollow)*Time.deltaTime;
 
-        cam.transform.position += player.player.ConnDiff;
+        cam.transform.position += player.physPly.ConnDiff;
 
 
         
@@ -122,7 +122,7 @@ public class CameraSystem : MonoBehaviour
         else isJumpingState = false;
 
         //Debug.Log("updote: " + realUpDot + "/" + Extensions.DegCos(topAngle) + ", Is valid slope: " + (followOnSlopes && player.player.GetIsGround && realUpDot > Extensions.DegCos(topAngle)) + ", is too close" + (planCamDistance < tooCloseRad && dotVelFacing < 0) + ", is auto: " + (autoAmmount < 0.5f && !isJumpingState));
-        if ((followOnSlopes && player.player.GetIsGround && realUpDot > Extensions.DegCos(topAngle)) || (planCamDistance < tooCloseRad && dotVelFacing < 0) || (autoAmmount < 1f && !isJumpingState))
+        if ((followOnSlopes && player.physPly.GetIsGround && realUpDot > Extensions.DegCos(topAngle)) || (planCamDistance < tooCloseRad && dotVelFacing < 0) || (autoAmmount < 1f && !isJumpingState))
         {
             cam.transform.position += Vector3.up * (upSpeedDot * Time.deltaTime);
         }

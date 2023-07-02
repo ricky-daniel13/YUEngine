@@ -25,10 +25,10 @@ public class ObjectDashPanel : MonoBehaviour
             if (pa.actionState.AllowExtMove())
             {
                 if (Additive)
-                    pa.player.InternalSpeed += transform.forward * Speed;
+                    pa.physPly.InternalSpeed += transform.forward * Speed;
                 else
                 {
-                    pa.player.InternalSpeed = transform.forward * Speed;
+                    pa.physPly.InternalSpeed = transform.forward * Speed;
                 }
 
                 dashEffector.PlayOneShot(dashSound);
