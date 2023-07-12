@@ -46,13 +46,13 @@ public class SonicState_Jump
 
     void Begin()
     {
-        trg.player.gravityForce = trg.currPms.upGravityForce;
+        trg.physPly.gravityForce = trg.currPms.upGravityForce;
 
-        trg.player.InternalSpeed += trg.player.GroundNormal * trg.currPms.jumpForce;
-        trg.player.transform.position=trg.transform.position += (trg.player.GroundNormal) * 0.2f;
+        trg.physPly.InternalSpeed += trg.physPly.GroundNormal * trg.currPms.jumpForce;
+        trg.physPly.transform.position=trg.transform.position += (trg.physPly.GroundNormal) * 0.2f;
         //trg.player.transform.rotation = Quaternion.FromToRotation(Vector3.up, -trg.player.gravityDir);
-        trg.player.GetIsGround = false;
-        trg.player.skipNextCol = true;
+        trg.physPly.GetIsGround = false;
+        trg.physPly.skipNextCol = true;
         trg.anim.anim.SetBool(idIsJump, true);
         trg.steps.source.PlayOneShot(trg.steps.Jump);
         trg.jumpball.SetActive(true);
@@ -72,12 +72,12 @@ public class SonicState_Jump
     void Update()
     {
         float minSpeed;
-        Vector3 speedUp = Vector3.Project(trg.player.InternalSpeed, -trg.player.gravityDir);
-        minSpeed = Mathf.Max(speedUp.magnitude, (trg.player.InternalSpeed - speedUp).magnitude);
-        if (!Input.GetButton("Jump") && Vector3.Dot(trg.player.InternalSpeed, -trg.player.gravityDir) > trg.currPms.lowJumpSpeed && Vector3.Dot(trg.player.InternalSpeed, -trg.player.gravityDir) > 0)
+        Vector3 speedUp = Vector3.Project(trg.physPly.InternalSpeed, -trg.physPly.gravityDir);
+        minSpeed = Mathf.Max(speedUp.magnitude, (trg.physPly.InternalSpeed - speedUp).magnitude);
+        if (!Input.GetButton("Jump") && Vector3.Dot(trg.physPly.InternalSpeed, -trg.physPly.gravityDir) > trg.currPms.lowJumpSpeed && Vector3.Dot(trg.physPly.InternalSpeed, -trg.physPly.gravityDir) > 0)
         {
-            trg.player.InternalSpeed -= speedUp;
-            trg.player.InternalSpeed += speedUp.normalized * trg.currPms.lowJumpSpeed;
+            trg.physPly.InternalSpeed -= speedUp;
+            trg.physPly.InternalSpeed += speedUp.normalized * trg.currPms.lowJumpSpeed;
         }
 
         trg.anim.OverridenSpeed = Mathf.Max(minSpeed, trg.anim.minJumpSpeed);
@@ -85,18 +85,18 @@ public class SonicState_Jump
 
     void BeforePhys()
     {
-        if (trg.player.GetIsGround)
+        if (trg.physPly.GetIsGround)
         {
             machine.TransitionTo("Walk");
             trg.steps.source.PlayOneShot(trg.steps.Land);
         }
 
-        if (!trg.player.GetIsControlLock)
+        if (!trg.physPly.GetIsControlLock)
             trg.mvm.DoInputDamizean(trg.currPms.air, trg.currPms.air, trg.currPms.jumpTangentDrag, Mathf.Infinity, trg.input);
 
-        if (trg.player.GetUpSpeed > 0)
-            trg.player.gravityForce = trg.currPms.upGravityForce;
+        if (trg.physPly.GetUpSpeed > 0)
+            trg.physPly.gravityForce = trg.currPms.upGravityForce;
         else
-            trg.player.gravityForce = trg.currPms.gravityForce;
+            trg.physPly.gravityForce = trg.currPms.gravityForce;
     }
 }

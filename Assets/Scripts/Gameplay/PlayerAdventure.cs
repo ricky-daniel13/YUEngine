@@ -25,7 +25,7 @@ public class PlayerAdventure : MonoBehaviour
 {
     public YUInput inputCont;
     public YUCameraControl cameraInput;
-    public YUController player;
+    public YUController physPly;
     public PlayerInput input;
     public InputRef inputFrame;
 
@@ -60,8 +60,8 @@ public class PlayerAdventure : MonoBehaviour
     public PlayerStateMachine<PlayerAdventure> actionState;
 
     Vector3 localFacing = Vector3.forward;
-    public Vector3 globalFacing { get { return player.transform.TransformVector(localFacing); } 
-    set {localFacing=player.transform.InverseTransformVector(value);} }
+    public Vector3 globalFacing { get { return physPly.transform.TransformVector(localFacing); } 
+    set {localFacing=physPly.transform.InverseTransformVector(value);} }
 
     private void Awake()
     {
@@ -80,7 +80,7 @@ public class PlayerAdventure : MonoBehaviour
         moveState.AddState(lpState.GetState());
         moveState.Build();
 
-        mvm.player = player;
+        mvm.player = physPly;
         mvm.transform = transform;
     }
 
@@ -88,10 +88,10 @@ public class PlayerAdventure : MonoBehaviour
     {
         moveState.DoOnEnable();
 
-        player.BeforeCol += PlayerCollision;
-        player.BeforePhys += BeforePhys;
-        player.AfterPhys += AfterPhys;
-        player.BeforeUploadSpeed += BeforeUploadSpeed;
+        physPly.BeforeCol += PlayerCollision;
+        physPly.BeforePhys += BeforePhys;
+        physPly.AfterPhys += AfterPhys;
+        physPly.BeforeUploadSpeed += BeforeUploadSpeed;
 
     }
 
@@ -132,16 +132,18 @@ public class PlayerAdventure : MonoBehaviour
     private void LateUpdate()
     {
         //Debug.Log("Projected speed: " + Vector3.ProjectOnPlane(player.InternalSpeed, transform.up).sqrMagnitude);
-        if (Vector3.ProjectOnPlane(player.InternalSpeed, player.GroundNormal).sqrMagnitude > 0.000001f)
+        if (Vector3.ProjectOnPlane(physPly.InternalSpeed, physPly.GroundNormal).sqrMagnitude > 0.00001f)
         {
-            
-            localFacing = player.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(player.InternalSpeed.normalized,player.GroundNormal));
+            localFacing = physPly.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(physPly.InternalSpeed.normalized, transform.up));
         }
+
+        
+
         moveState.DoLateUpdate();
         trail.transform.position = transform.position + transform.up * trailOffset;
         jumpball.transform.parent.position = transform.position + anim.transform.up * jumpballOffset;
         jumpball.transform.parent.transform.rotation = Quaternion.LookRotation(globalFacing, anim.transform.up);
-        jumpball.transform.transform.localRotation = jumpball.transform.transform.localRotation * Quaternion.AngleAxis(Mathf.Max(minBallSpeed, player.InternalSpeed.magnitude)*anglePerUnitSpeed*Time.deltaTime, Vector3.right);
+        jumpball.transform.transform.localRotation = jumpball.transform.transform.localRotation * Quaternion.AngleAxis(Mathf.Max(minBallSpeed, physPly.InternalSpeed.magnitude)*anglePerUnitSpeed*Time.deltaTime, Vector3.right);
     }
 
     void BeforePhys()
@@ -155,13 +157,18 @@ public class PlayerAdventure : MonoBehaviour
 
         if (Input.GetButton("Fly"))
         {
-            Vector3 speedUp = Vector3.Project(player.InternalSpeed, -player.gravityDir);
-            player.InternalSpeed -= speedUp;
-            player.InternalSpeed += -player.gravityDir * currPms.jumpForce;
-            player.controlLockTimer = -1f;
-            player.transform.position = transform.position + (player.GroundNormal * 0.1f);
-            player.GetIsGround = false;
-            player.skipNextCol = true;
+            Vector3 speedUp = Vector3.Project(physPly.InternalSpeed, -physPly.gravityDir);
+            physPly.InternalSpeed -= speedUp;
+            physPly.InternalSpeed += -physPly.gravityDir * currPms.jumpForce;
+            physPly.controlLockTimer = -1f;
+            physPly.transform.position = transform.position + (physPly.GroundNormal * 0.1f);
+            physPly.GetIsGround = false;
+            physPly.skipNextCol = true;
+        }
+
+        if (physPly.ConnBody)
+        {
+            localFacing = physPly.transform.InverseTransformVector(Extensions.ProjectDirectionOnPlane(physPly.connRota * globalFacing, transform.up));
         }
     }
 
@@ -172,7 +179,7 @@ public class PlayerAdventure : MonoBehaviour
 
     void PlayerCollision()
     {
-        player.tryGroundDistance = player.physBody.velocity.magnitude < currPms.runSpeed ? currPms.tryGroundDistance : currPms.tryGroundDistanceFast;
+        physPly.tryGroundDistance = physPly.physBody.velocity.magnitude < currPms.runSpeed ? currPms.tryGroundDistance : currPms.tryGroundDistanceFast;
         actionState.DoBeforeCol();
     }
 
@@ -186,7 +193,7 @@ public class PlayerAdventure : MonoBehaviour
                 if (!pth.IsExit)
                 {
                     PathLoop newPath = pth.pathHolder.GetComponent<PathLoop>(); 
-                    if (newPath != loopPath && (Vector3.Dot(other.transform.forward, player.InternalSpeed) > 0))
+                    if (newPath != loopPath && (Vector3.Dot(other.transform.forward, physPly.InternalSpeed) > 0))
                     {
                         loopPath = newPath;
                         moveState.TransitionTo("Loop");

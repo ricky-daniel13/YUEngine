@@ -31,6 +31,11 @@ public class ObjectDashPanel : MonoBehaviour
                     pa.physPly.InternalSpeed = transform.forward * Speed;
                 }
 
+                if(OutOfControl > 0)
+                {
+                    pa.physPly.controlLockTimer = OutOfControl;
+                }
+
                 dashEffector.PlayOneShot(dashSound);
             }
         }

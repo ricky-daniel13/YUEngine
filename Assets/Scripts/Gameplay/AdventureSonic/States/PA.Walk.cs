@@ -47,7 +47,7 @@ public class SonicState_Walk
 
     void Begin()
     {
-        if (!trg.player.GetIsGround)
+        if (!trg.physPly.GetIsGround)
         {
             machine.TransitionTo("Fall");
             return;
@@ -60,9 +60,9 @@ public class SonicState_Walk
 
     void ParamChange()
     {
-        trg.player.gravityForce = trg.currPms.gravityForce;
-        trg.player.slopeFactor = trg.currPms.slopeFactor;
-        trg.player.frc = trg.currPms.frc;
+        trg.physPly.gravityForce = trg.currPms.gravityForce;
+        trg.physPly.slopeFactor = trg.currPms.slopeFactor;
+        trg.physPly.frc = trg.currPms.frc;
         trg.anim.isGrounded = true;
         
         trg.mvm.rotaDecelFactor = trg.currPms.rotaModeSpdMul;
@@ -75,16 +75,16 @@ public class SonicState_Walk
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump") && trg.player.GetIsGround)
+        if (Input.GetButtonDown("Jump") && trg.physPly.GetIsGround)
         {
             machine.TransitionTo("Jump");
             trg.anim.anim.SetTrigger("groundToJump");
             return;
         }
 
-        if (Input.GetButtonDown("Roll") && trg.player.GetIsGround)
+        if (Input.GetButtonDown("Roll") && trg.physPly.GetIsGround)
         {
-            if(trg.player.InternalSpeed.magnitude > trg.currPms.rollStopSpeed){
+            if(trg.physPly.InternalSpeed.magnitude > trg.currPms.rollStopSpeed){
                 machine.TransitionTo("Roll");
                 return;
             }
@@ -97,29 +97,29 @@ public class SonicState_Walk
 
     void BeforePhys()
     {
-        float evAcc = trg.currPms.acc * trg.currPms.accOverSpeed.Evaluate(Mathf.Max(0, trg.player.InternalSpeed.magnitude) / (trg.currPms.topSpeed));
-        float evTang = trg.currPms.tangentDrag * trg.currPms.tangOverSpeed.Evaluate(Mathf.Max(0, trg.player.InternalSpeed.magnitude) / (trg.currPms.topSpeed));
+        float evAcc = trg.currPms.acc * trg.currPms.accOverSpeed.Evaluate(Mathf.Max(0, trg.physPly.InternalSpeed.magnitude) / (trg.currPms.topSpeed));
+        float evTang = trg.currPms.tangentDrag * trg.currPms.tangOverSpeed.Evaluate(Mathf.Max(0, trg.physPly.InternalSpeed.magnitude) / (trg.currPms.topSpeed));
 
         
         float evMaxSpeed = trg.currPms.maxSpeedOverPush.Evaluate(trg.input.mag) * trg.currPms.topSpeed;
 
-        if(trg.player.InternalSpeed.magnitude < trg.currPms.runSpeed)
+        if(trg.physPly.InternalSpeed.magnitude < trg.currPms.runSpeed)
             trg.mvm.accOnDesiredDir = true;
         else
             trg.mvm.accOnDesiredDir = false;
 
         //Debug.Log("Input magnitude: " + trg.input.mag + " ev:" + evMaxSpeed + " evaluation: " + trg.currPms.maxSpeedOverPush.Evaluate(trg.input.mag));
 
-        if (!trg.player.GetIsGround)
+        if (!trg.physPly.GetIsGround)
         {
             machine.TransitionTo("Fall");
             return;
         }
         
-        trg.player.doFriction = !(trg.input.mag > 0) || trg.player.GetIsControlLock;
-        float rotaSpeed = trg.currPms.rotaModeSpeed / (1 + rotaDecRate * Mathf.Max(0, trg.player.InternalSpeed.magnitude - trg.currPms.rotaModeSpeedMin));
+        trg.physPly.doFriction = !(trg.input.mag > 0) || trg.physPly.GetIsControlLock;
+        float rotaSpeed = trg.currPms.rotaModeSpeed / (1 + rotaDecRate * Mathf.Max(0, trg.physPly.InternalSpeed.magnitude - trg.currPms.rotaModeSpeedMin));
 
-        if (!trg.player.GetIsControlLock)
+        if (!trg.physPly.GetIsControlLock)
         {
             string currentState = trg.moveState.StateName;
             switch (currentState)

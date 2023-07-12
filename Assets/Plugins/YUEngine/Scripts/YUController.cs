@@ -49,6 +49,7 @@ namespace YU2
         public LayerMask groundLayer, movingLayer;
         public bool stopOnCeil, stopOnWall;
         Vector3 connWorldPos, connLocalPos, connDiff, connTorq, connWorldRota, connLocalRota, newNormal;
+        Matrix4x4 connMat;
         [Header("Gravity")]
         public float gravityForce = 30;
         public float maxGravityForce=70;
@@ -113,6 +114,8 @@ namespace YU2
         }
 
         public Vector3 ConnDiff { get => connDiff;}
+        public Rigidbody ConnBody { get => connBody;}
+        public Quaternion connRota;
 
         int keepRotation;
 
@@ -251,14 +254,15 @@ namespace YU2
             AfterPhys?.Invoke();
 
             BeforeUploadSpeed?.Invoke();
+
+            physBody.angularVelocity = Vector3.zero;
+            physBody.centerOfMass = Vector3.zero;
+            physBody.inertiaTensor = Vector3.zero;
+            physBody.inertiaTensorRotation = Quaternion.identity;
+
             if (doSpeedUpload)
                 physBody.velocity = finalSpeed;
-            if (finalSpeed.sqrMagnitude == 0)
-            {
-                physBody.Sleep();
-                //Debug.Log("Frozen!");
-            }
-            //Debug.Log("physvel: " + physBody.velocity.sqrMagnitude + ", connDif: " + connDiff);
+
             if(connBody)
                 transform.position+=connDiff;
             AfterUploadSpeed?.Invoke();
@@ -367,12 +371,20 @@ namespace YU2
 
             if (connBody)
             {
-                if (connBody == prevConnBody)
+                if (connBody != prevConnBody)
                 {
-                    connDiff = connBody.transform.TransformPoint(connLocalPos) - connWorldPos;
+                    connMat = connBody.transform.localToWorldMatrix;
+                    connLocalPos = connMat.inverse.MultiplyPoint(transform.position);
                 }
-                connWorldPos = transform.position;
-                connLocalPos = connBody.transform.InverseTransformPoint(connWorldPos);
+                Vector3 localPoint = connMat.inverse.MultiplyPoint(transform.position);
+                Quaternion lastRota = connMat.rotation;
+                connMat = connBody.transform.localToWorldMatrix;
+                //Vector3 lastPos = connMat.inverse.MultiplyPoint(transform.position);
+                Vector3 newPos = connMat.MultiplyPoint(localPoint);
+                connDiff = newPos - transform.position;
+
+                //connRota = Quaternion.FromToRotation(lastPos.normalized, newPos.normalized);
+                connRota = connMat.rotation * Quaternion.Inverse(lastRota);
             }
         }
 
@@ -402,14 +414,22 @@ namespace YU2
 
             averageFloorNor = -gravityDir;
             averageFloorPos = Vector3.zero;
-            colCount = 0;
-            connBody = null;
 
-            if (Physics.Raycast(capsuleBottom + (-direction * 0.1f), direction, out hit, 0.2f, groundLayer))
+            colCount = 0;
+
+            connBody = null;
+            
+            
+            if (Physics.Raycast(transform.position + (-direction * 0.1f), direction, out hit, 0.3f, groundLayer))
             {
+                Debug.DrawRay(transform.position, direction * (hit.distance - 0.1f), Color.red, Time.fixedDeltaTime);
+
+                Vector3 projectionVector = Vector3.Project(direction * (hit.distance - 0.1f), -transform.up);
+                //Debug.Log("Projections size: " + projectionVector.sqrMagnitude + ", " + (projectionVector.sqrMagnitude < 0.00000001 ? "zero" : "not zero") + ", dis: " + hit.distance);
+                Debug.DrawRay(transform.position + (-direction * 0.1f), Vector3.Project(direction * (hit.distance), -transform.up), Color.green, Time.fixedDeltaTime);
                 if (Vector3.Dot(transform.up, hit.normal) > cosMaxAngle)
                 {
-                    Vector3 projectionVector = Vector3.Project(direction*(hit.distance-0.1f), -transform.up);
+                    
                     averageFloorPos = hit.point;
                     averageFloorNor = hit.normal;
                     colCount = 1;
@@ -417,10 +437,11 @@ namespace YU2
                     {
                         connBody = hit.rigidbody;
                     }
-
-                    transform.position=transform.position+projectionVector;
+                    if(projectionVector.sqrMagnitude > 0.00000001)
+                        transform.position+=projectionVector;
                 }
             }
+            Debug.Log("Connection: " + ((ConnBody) ? "yes" : "no" ) + ",prev: " + ((prevConnBody) ? "yes" : "no"));
         }
 
 
@@ -430,7 +451,7 @@ namespace YU2
             Vector3 capsuleTop, capsuleBottom;
             physShape.ToWorldSpaceCapsule(out capsuleTop, out capsuleBottom, out _);
 
-            if (Physics.Raycast(capsuleBottom + (transform.up * 0.25f), -transform.up, out hit, 0.25f+tryGroundDistance, groundLayer))
+            if (Physics.Raycast(transform.position + (transform.up * 0.25f), -transform.up, out hit, 0.25f+tryGroundDistance, groundLayer))
             {
                 if (Vector3.Dot(transform.up, hit.normal) > cosMaxAngle)
                 {
@@ -589,10 +610,11 @@ namespace YU2
 
             if (!connBody && prevConnBody)
             {
-                prevConnBody = null;
+                //prevConnBody = null;
                 finalSpeed += (connDiff / Time.fixedDeltaTime);
                 connDiff = Vector3.zero;
-                //Debug.Log("Launched");
+                connRota = Quaternion.identity;
+                Debug.Log("Launched at " + Time.time);
             }
 
             prevConnBody = connBody;

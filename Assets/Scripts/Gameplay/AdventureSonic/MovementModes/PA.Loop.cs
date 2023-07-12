@@ -31,7 +31,7 @@ public class MoveMode_Loop
 
     private void OnGUI()
     {
-        trg.transform.BreakDownSpeed(trg.player.InternalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
+        trg.transform.BreakDownSpeed(trg.physPly.InternalSpeed, out Vector3 vSpeed, out Vector3 hSpeed);
         Vector3 inputDir = trg.transform.InverseTransformDirection(trg.input.playerDir);
         float normalSpeed = Vector3.Dot(hSpeed, inputDir);
         float dirDif = Vector3.Dot(hSpeed.normalized, inputDir);
@@ -39,13 +39,13 @@ public class MoveMode_Loop
         // Make a background box
         GUI.Box(new Rect(10, 10, 250, 250), "Sonic data: \tState: " + trg.actionState.currentState);
 
-        GUI.Label(new Rect(15, 25, 250, 100), "isGrounded =" + trg.player.GetIsGround);
+        GUI.Label(new Rect(15, 25, 250, 100), "isGrounded =" + trg.physPly.GetIsGround);
         GUI.Label(new Rect(15, 25 + 15, 250, 100), "position =" + trg.transform.position);
-        GUI.Label(new Rect(15, 25 + 15 + 15, 250, 100), "speed magnitude =" + trg.player.physBody.velocity.magnitude.ToString("F2"));
-        GUI.Label(new Rect(15, 25 + 15 + 15 + 15, 250, 100), "fall speed =" + Vector3.Dot(trg.player.InternalSpeed, trg.player.gravityDir).ToString("F2"));
-        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15, 250, 100), "ground angle =" + Vector3.Angle(-trg.player.gravityDir, trg.player.GroundNormal));
-        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15, 250, 100), "control lock =" + trg.player.controlLockTimer.ToString("F2"));
-        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "rota speed calc =" + (Mathf.Max(0, trg.player.InternalSpeed.magnitude - trg.currPms.rotaModeSpeedMin) / (trg.currPms.rotaModeSpeedMax - trg.currPms.rotaModeSpeedMin)).ToString("F3"));
+        GUI.Label(new Rect(15, 25 + 15 + 15, 250, 100), "speed magnitude =" + trg.physPly.physBody.velocity.magnitude.ToString("F2"));
+        GUI.Label(new Rect(15, 25 + 15 + 15 + 15, 250, 100), "fall speed =" + Vector3.Dot(trg.physPly.InternalSpeed, trg.physPly.gravityDir).ToString("F2"));
+        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15, 250, 100), "ground angle =" + Vector3.Angle(-trg.physPly.gravityDir, trg.physPly.GroundNormal));
+        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15, 250, 100), "control lock =" + trg.physPly.controlLockTimer.ToString("F2"));
+        GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "rota speed calc =" + (Mathf.Max(0, trg.physPly.InternalSpeed.magnitude - trg.currPms.rotaModeSpeedMin) / (trg.currPms.rotaModeSpeedMax - trg.currPms.rotaModeSpeedMin)).ToString("F3"));
         GUI.Label(new Rect(15, 25 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15 + 15, 250, 100), "Input raw angle =" + Vector2.Angle(Vector2.up, trg.input.directionRaw).ToString("F2") + ", dir diff: " + dirDif.ToString("F4"));
 
     }
@@ -69,11 +69,11 @@ public class MoveMode_Loop
     {
         trg.currPms = trg.threeD;
         trg.actionState.DoParamChange();
-        Vector3 newPos = trg.loopPath.PutOnPath(trg.player.transform.position, trg.player.transform.up, out trg.loopKnot, out lastTime, out pathBound);
-        splineRightPos = Vector3.Dot(trg.player.transform.position - newPos, trg.loopKnot.binormal);
-        trg.player.physBody.MovePosition(newPos + (trg.loopKnot.binormal * splineRightPos));
+        Vector3 newPos = trg.loopPath.PutOnPath(trg.physPly.transform.position, trg.physPly.transform.up, out trg.loopKnot, out lastTime, out pathBound);
+        splineRightPos = Vector3.Dot(trg.physPly.transform.position - newPos, trg.loopKnot.binormal);
+        trg.physPly.physBody.MovePosition(newPos + (trg.loopKnot.binormal * splineRightPos));
         Debug.Log("Starting Loop!");
-        oldSplineDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GroundNormal));
+        oldSplineDir = trg.physPly.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.physPly.GroundNormal));
     }
 
     void OnBuild(PlayerAdventure target, MonoStateMachine<PlayerAdventure> machine)
@@ -84,16 +84,16 @@ public class MoveMode_Loop
 
     void OnEnable()
     {
-        trg.player.BeforeCol += PlayerCollision;
-        trg.player.AfterPhys += AfterPhys;
-        trg.player.BeforeUploadSpeed += BeforeUploadSpeed;
+        trg.physPly.BeforeCol += PlayerCollision;
+        trg.physPly.AfterPhys += AfterPhys;
+        trg.physPly.BeforeUploadSpeed += BeforeUploadSpeed;
     }
 
     private void OnDisable()
     {
-        trg.player.BeforeCol -= PlayerCollision;
-        trg.player.AfterPhys -= AfterPhys;
-        trg.player.BeforeUploadSpeed -= BeforeUploadSpeed;
+        trg.physPly.BeforeCol -= PlayerCollision;
+        trg.physPly.AfterPhys -= AfterPhys;
+        trg.physPly.BeforeUploadSpeed -= BeforeUploadSpeed;
         trg.loopPath = null;
     }
 
@@ -108,15 +108,15 @@ public class MoveMode_Loop
     {
         if (Input.GetButton("Fly"))
         {
-            Vector3 speedUp = Vector3.Project(trg.player.InternalSpeed, -trg.player.gravityDir);
-            trg.player.InternalSpeed -= speedUp;
-            trg.player.InternalSpeed += -trg.player.gravityDir * trg.currPms.jumpForce;
-            trg.player.controlLockTimer = -1f;
-            trg.player.transform.position = trg.player.transform.position + (-trg.player.gravityDir * trg.currPms.jumpForce * Time.fixedDeltaTime);
-            trg.player.GetIsGround = false;
-            trg.player.skipNextCol = true;
+            Vector3 speedUp = Vector3.Project(trg.physPly.InternalSpeed, -trg.physPly.gravityDir);
+            trg.physPly.InternalSpeed -= speedUp;
+            trg.physPly.InternalSpeed += -trg.physPly.gravityDir * trg.currPms.jumpForce;
+            trg.physPly.controlLockTimer = -1f;
+            trg.physPly.transform.position = trg.physPly.transform.position + (-trg.physPly.gravityDir * trg.currPms.jumpForce * Time.fixedDeltaTime);
+            trg.physPly.GetIsGround = false;
+            trg.physPly.skipNextCol = true;
         }
-        if(!trg.player.GetIsGround && trg.loopPath.ExitOnFall){
+        if(!trg.physPly.GetIsGround && trg.loopPath.ExitOnFall){
             trg.moveState.TransitionTo("FreeRoam");
         }
     }
@@ -127,21 +127,21 @@ public class MoveMode_Loop
         float searchStart = ((lastTime < trg.loopPath.getSwitch) ? trg.loopPath.getStart : trg.loopPath.getEnd).x;
         float searchEnd = ((lastTime < trg.loopPath.getSwitch) ? trg.loopPath.getStart : trg.loopPath.getEnd).y;
 
-        if (trg.player.GetIsGround)
+        if (trg.physPly.GetIsGround)
         {
             searchEnd = 1;
             searchStart = 0;
         }
-        Vector3 pathPos = trg.loopPath.PutOnPath(trg.player.transform.position - (trg.loopKnot.binormal * splineRightPos), trg.player.transform.up, out trg.loopKnot, out lastTime, out pathBound, searchStart, searchEnd);
+        Vector3 pathPos = trg.loopPath.PutOnPath(trg.physPly.transform.position - (trg.loopKnot.binormal * splineRightPos), trg.physPly.transform.up, out trg.loopKnot, out lastTime, out pathBound, searchStart, searchEnd);
 
-        if (!trg.player.GetIsGround)
+        if (!trg.physPly.GetIsGround)
             lastTime = lastValidPoint;
 
         splineRightPos = Mathf.Min(MathF.Max(splineRightPos, -pathBound), pathBound);
 
         SplineSpeedCorrection();
 
-        trg.player.physBody.MovePosition(pathPos + trg.loopKnot.binormal * splineRightPos);
+        trg.physPly.physBody.MovePosition(pathPos + trg.loopKnot.binormal * splineRightPos);
         Debug.DrawRay(pathPos + Vector3.up, trg.loopKnot.tangent);
         /*Vector3 projRgt = Extensions.ProjectDirectionOnPlane(trg.loopKnot.binormal, trg.transform.up);
         float rgtSpeed = Vector3.Dot(projRgt, trg.player.InternalSpeed);
@@ -167,9 +167,9 @@ public class MoveMode_Loop
     {
         Debug.DrawRay(splinePos, Vector3.up, Color.blue);
 
-        trg.transform.BreakDownSpeed(trg.player.InternalSpeed, out Vector3 verticalVelocity, out Vector3 lateralVelocity);
+        trg.transform.BreakDownSpeed(trg.physPly.InternalSpeed, out Vector3 verticalVelocity, out Vector3 lateralVelocity);
 
-        Vector3 currDir = trg.player.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.player.GroundNormal));
+        Vector3 currDir = trg.physPly.transform.InverseTransformDirection(Extensions.ProjectDirectionOnPlane(trg.loopKnot.tangent, trg.physPly.GroundNormal));
 
         //Vector3 rgt = Vector3.Cross(Vector3.up, currDir).normalized;
 
@@ -178,7 +178,7 @@ public class MoveMode_Loop
 
         //trg.player.InternalSpeed = trg.player.transform.TransformDirection((lateralVelocity) + verticalVelocity);
 
-        float speedToRight = Vector3.Dot(trg.loopKnot.binormal, trg.player.InternalSpeed);
+        float speedToRight = Vector3.Dot(trg.loopKnot.binormal, trg.physPly.InternalSpeed);
         //trg.player.InternalSpeed -= trg.loopKnot.binormal * speedToRight;
         splineRightPos += speedToRight * Time.fixedDeltaTime;
         //Debug.Log("Forwards speed = " + (lateralVelocity - (trg.loopKnot.binormal * speedToRight)).magnitude);
@@ -186,7 +186,7 @@ public class MoveMode_Loop
         float speedDec = (lateralVelocity - (trg.loopKnot.binormal * speedToRight)).magnitude;
         speedDec/=2;
 
-        trg.player.InternalSpeed -= trg.loopKnot.binormal * Mathf.Sign(splineRightPos)*Mathf.Min(speedDec,Mathf.Abs(speedToRight));
+        trg.physPly.InternalSpeed -= trg.loopKnot.binormal * Mathf.Sign(splineRightPos)*Mathf.Min(speedDec,Mathf.Abs(speedToRight));
         splineRightPos = Mathf.MoveTowards(splineRightPos, 0, speedDec * Time.fixedDeltaTime);
         
         /*if ((trg.player.GetIsGround && (trg.loopPath.getStart.y < lastTime) && (lastTime < trg.loopPath.getEnd.x))|| (splineRightPos > pathBound) || (splineRightPos < -pathBound))

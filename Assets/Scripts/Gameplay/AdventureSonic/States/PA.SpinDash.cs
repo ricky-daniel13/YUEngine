@@ -46,7 +46,7 @@ public class SonicState_SpinDash
 
     void ParamChange()
     {
-        trg.player.frc = trg.currPms.dcc;
+        trg.physPly.frc = trg.currPms.dcc;
     }
 
     void Begin()
@@ -67,7 +67,7 @@ public class SonicState_SpinDash
     {
         trg.anim.anim.SetBool(idIsRoll, false);
         trg.jumpball.SetActive(false);
-        trg.player.slopeFactor = trg.currPms.slopeFactor;
+        trg.physPly.slopeFactor = trg.currPms.slopeFactor;
         trg.anim.anim.ResetTrigger("toRoll");
         trg.steps.source.Stop();
         trg.steps.source.PlayOneShot(trg.steps.SpinDashGo);
@@ -75,14 +75,14 @@ public class SonicState_SpinDash
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump") && trg.player.GetIsGround)
+        if (Input.GetButtonDown("Jump") && trg.physPly.GetIsGround)
         {
             machine.TransitionTo("Jump");
             return;
         }
 
         if(!Input.GetButton("Roll")){
-            trg.player.InternalSpeed = trg.globalFacing * acumSpeed;
+            trg.physPly.InternalSpeed = trg.globalFacing * acumSpeed;
             trg.steps.source.PlayOneShot(trg.steps.Spin);
             trg.jumpballAnimator.SetTrigger("DoDash");
             machine.TransitionTo("Roll");
@@ -95,7 +95,7 @@ public class SonicState_SpinDash
         if(trg.input.mag > 0){
             trg.globalFacing = trg.input.playerDir;
         }
-        trg.player.doFriction = true;
+        trg.physPly.doFriction = true;
         acumSpeed += data.acumPerSecond * Time.deltaTime;
         acumSpeed=Mathf.Min(acumSpeed, data.maxRelease);
         Debug.Log("acumSpeed=" + acumSpeed);

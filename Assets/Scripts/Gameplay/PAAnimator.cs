@@ -42,15 +42,15 @@ public class PAAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!player.player.GetIsGround)
+        if (!player.physPly.GetIsGround)
             framesToLand--;
         else
         {
             framesToLand = waitFramesToLand;
         }
 
-        anim.SetFloat(idSpeed, isOverridenSpeed ? overridenSpeed : player.player.InternalSpeed.magnitude);
-        anim.SetFloat(idvSpeed, Vector3.Dot(player.player.InternalSpeed, -player.player.gravityDir));
+        anim.SetFloat(idSpeed, isOverridenSpeed ? overridenSpeed : player.physPly.InternalSpeed.magnitude);
+        anim.SetFloat(idvSpeed, Vector3.Dot(player.physPly.InternalSpeed, -player.physPly.gravityDir));
         anim.SetBool(idIsGround, framesToLand > 0);
         /*if(player.player.InternalSpeed.sqrMagnitude > 0.01)
         {
@@ -77,7 +77,7 @@ public class PAAnimator : MonoBehaviour
 
         fwr = player.globalFacing;
 
-        currUp = Vector3.SmoothDamp(currUp, player.player.GroundNormal, ref vscUp, player.player.InternalSpeed.magnitude > player.currPms.runSpeed ? slopeRotaSpeed/2 : slopeRotaSpeed);
+        currUp = Vector3.SmoothDamp(currUp, player.physPly.GroundNormal, ref vscUp, player.physPly.InternalSpeed.magnitude > player.currPms.runSpeed ? slopeRotaSpeed/2 : slopeRotaSpeed);
 
         if (Vector3.Dot(currFwr, fwr) > 0)
             currFwr = Extensions.ProjectDirectionOnPlane(Vector3.RotateTowards(currFwr, fwr, Mathf.Deg2Rad * faceSpeed * Time.deltaTime, 0f), currUp);
