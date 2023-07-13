@@ -125,7 +125,7 @@ public class CameraSystem : MonoBehaviour
         {
             stopLocalFollow = 1;
         }
-        cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.Project(groundVelocity, cam.transform.right) * userLocal, stopLocalFollow) * Time.deltaTime;
+        cam.transform.position += Vector3.Lerp(groundVelocity, groundVelocity * userLocal, stopLocalFollow) * Time.deltaTime;
 
         cam.transform.position += player.physPly.ConnDiff;
 
@@ -143,8 +143,10 @@ public class CameraSystem : MonoBehaviour
             currRadTarget = frozenRad;
             currRadSpeed = 0;
             cam.transform.position += Vector3.up * (upSpeedDot * Time.deltaTime);
-            currDefElev = defElevJump;
-            currElevSpeed = elevSpeedAir;
+            if(groundSpeed > 10f){
+                currDefElev = defElevJump;
+                currElevSpeed = elevSpeedAir;
+            }
         }
         else isJumpingState = false;
 

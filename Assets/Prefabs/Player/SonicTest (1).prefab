@@ -1,5 +1,56 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &52027746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 52027747}
+  - component: {fileID: 52027748}
+  m_Layer: 0
+  m_Name: Projector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &52027747
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52027746}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.74, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 840985545606652736}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!119 &52027748
+Projector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52027746}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_NearClipPlane: 0
+  m_FarClipPlane: 100
+  m_FieldOfView: 60.94
+  m_AspectRatio: 1
+  m_Orthographic: 1
+  m_OrthographicSize: 0.52
+  m_Material: {fileID: 2100000, guid: e30ff3588e719f34bbf0c66f22d97487, type: 2}
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &980071037
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,13 +180,13 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874118998128462733}
-  m_Material: {fileID: 13400000, guid: 582e3092b5b1fd24c891670a03731331, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.29
+  m_Radius: 0.3
   m_Height: 1
   m_Direction: 1
-  m_Center: {x: 0, y: 0.45, z: 0}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!54 &874118998128462721
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -144,12 +195,12 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874118998128462733}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 40
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 2
   m_Constraints: 112
   m_CollisionDetection: 2
 --- !u!114 &874118998128462722
@@ -192,7 +243,7 @@ MonoBehaviour:
   groundMethod: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 520
+    m_Bits: 2568
   movingLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -201,6 +252,7 @@ MonoBehaviour:
   gravityForce: 49.21875
   maxGravityForce: 49.21875
   gravityDir: {x: 0, y: -1, z: 0}
+  connRota: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &874118998128462723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +288,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputCont: {fileID: 874118998128462723}
   cameraInput: {fileID: 874118996421901424}
-  player: {fileID: 874118998128462722}
+  physPly: {fileID: 874118998128462722}
   input:
     playerDir: {x: 0, y: 0, z: 0}
     directionRaw: {x: 0, y: 0}
@@ -248,7 +300,7 @@ MonoBehaviour:
   jumpball: {fileID: 980071037}
   jumpballBall: {fileID: 7837905781905283759}
   trailOffset: 0.6
-  jumpballOffset: 0.43
+  jumpballOffset: 0.47
   minBallSpeed: 15
   anglePerUnitSpeed: 100
   jumpballAnimator: {fileID: 1352818885}
@@ -318,7 +370,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -462,8 +514,8 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.19157171, g: 0.35363692, b: 0.990566, a: 1}
-      key1: {r: 0.19157171, g: 0.35363692, b: 0.990566, a: 0}
+      key0: {r: 0, g: 0.13651484, b: 0.6792453, a: 1}
+      key1: {r: 0, g: 0.13651484, b: 0.6792453, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -542,42 +594,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a93fd6f4cf5141f42ad64bd359625bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radSpeed: 0.15
-  radSpeedClose: 0.35
+  radSpeed: 0
+  radSpeedClose: 0.05
   azimSpeed: 5
   azimStickSpeed: 180
-  elevSpeed: 0.1
-  elevSpeedAir: 0.65
-  defRad: 4.5
+  elevSpeed: 0.05
+  elevSpeedAir: 1.3
+  defRad: 6.5
   closeRad: 4
   tooCloseRad: 1
   defAzim: 0
   defElev: 0.7
-  defElevJump: 3
-  lookSpeed: 0.05
+  defElevJump: 2
+  lookSpeed: 0
   lookHorSpeed: 0
-  fovSpeed: 0.2
-  fovNormal: 50
-  fovFast: 50
+  fovSpeed: 0.1
+  fovNormal: 55
+  fovFast: 55
   maxAngle: 12
   topAngle: 35
-  angleSpeed: 0.2
-  playerOffset: 0.85
-  minRunSpeed: 15
-  maxRunSpeed: 23
+  angleSpeed: 0.3
+  playerOffset: 1.3
+  minRunSpeed: 13
+  maxRunSpeed: 30
   upAdjustSpeed: 30
   elevPhysSpeed: 90
   timeToAuto: 2.5
   autoTransTime: 0.4
-  followSpeed: 0.1
+  followSpeed: 0.2
   followAmmount: 0.03125
   cameraRad: 0.35
   heightAllowTime: 0.2
+  manualAdjustTime: 0.2
+  cameraFlattenAmmount: 0.5
+  cameraLocalAmmount: 0.95
   followOnSlopes: 1
   autoAdjustElev: 1
   physAdjustElev: 0
   player: {fileID: 874118998128462732}
   cam: {fileID: 1915301887404134216}
+  cameraLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  rightMargin: 0
 --- !u!1 &7482506402977050399
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PA: {fileID: 874118998128462732}
   camera: {fileID: 1915301887404134218}
-  deathDistance: -25
+  deathDistance: -50
 --- !u!1001 &874118996631356587
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -853,7 +912,8 @@ MonoBehaviour:
   rotaSpeed: 600
   slopeRotaSpeed: 0.25
   inputChangeSpeed: 5
-  VertOffset: -0.05
+  VertOffset: 0
+  minJumpSpeed: 10
   waitFramesToLand: 3
   isGrounded: 0
   desiredSpeed: {x: 0, y: 0, z: 0}

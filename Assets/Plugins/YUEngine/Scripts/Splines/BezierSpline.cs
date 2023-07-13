@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace YU2.Splines
@@ -309,16 +310,15 @@ namespace YU2.Splines
 
         private void OnDrawGizmos()
         {
-			/*int steps = 10 * CurveCount;
-			Vector3 lastPoint = GetPoint(0);
-			
-			for (int i = 1; i <= steps; i++)
+			Vector3 p0 = transform.TransformPoint(GetControlPoint(0, BezierKind.Point));
+			for (int i = 0; i < CurveCount; i += 1)
 			{
-				Vector3 newPoint = GetPoint(i / (float)steps);
-				Gizmos.color = Color.white;
-				Gizmos.DrawLine(lastPoint, newPoint);
-				lastPoint = newPoint;
-			}*/
+				Vector3 p1 = transform.TransformPoint(GetControlPoint(i, BezierKind.TangentOut));
+				Vector3 p2 = transform.TransformPoint(GetControlPoint(i+1, BezierKind.TangentIn));
+				Vector3 p3 = transform.TransformPoint(GetControlPoint(i+1, BezierKind.Point));
+				Handles.DrawBezier(p0, p3, p1, p2, Color.grey, null, 1f);
+				p0 = p3;
+			}
 		}
     }
 }
