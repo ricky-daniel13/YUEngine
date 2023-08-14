@@ -17,10 +17,10 @@ public class CameraSystem : MonoBehaviour
     public LayerMask cameraLayers;
 
 
-    private float userFov = 50.0f, userLocal = 0.75f;
+    private float userFov = 65.0f, userLocal = 0.95f;
     bool userDinFov = false;
-    bool userLookAhead = true;
-    bool userLookAheadCam = true;
+    bool userLookAhead = false;
+    bool userLookAheadCam = false;
     public float rightMargin;
     public Rect AlignRight(Rect rect)
     {
@@ -125,7 +125,7 @@ public class CameraSystem : MonoBehaviour
         {
             stopLocalFollow = 1;
         }
-        cam.transform.position += Vector3.Lerp(groundVelocity, groundVelocity * userLocal, stopLocalFollow) * Time.deltaTime;
+        cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.Project(groundVelocity * userLocal, cam.transform.right), stopLocalFollow) * Time.deltaTime;
 
         cam.transform.position += player.physPly.ConnDiff;
 
