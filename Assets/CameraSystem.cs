@@ -17,7 +17,7 @@ public class CameraSystem : MonoBehaviour
     public LayerMask cameraLayers;
 
 
-    private float userFov = 65.0f, userLocal = 0.95f;
+    private float userFov = 65.0f, userLocal = 0.85f;
     bool userDinFov = false;
     bool userLookAhead = false;
     bool userLookAheadCam = false;

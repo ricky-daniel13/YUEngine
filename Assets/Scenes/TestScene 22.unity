@@ -3299,7 +3299,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 0
+  OutOfControl: 0.1
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -5793,7 +5793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9476572b18e5cfb4dbad553887b962cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -198.65944
+      value: -198.2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9476572b18e5cfb4dbad553887b962cb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5858,7 +5858,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 1
+  OutOfControl: 2
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -16728,7 +16728,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9476572b18e5cfb4dbad553887b962cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -194.65945
+      value: -195.14
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9476572b18e5cfb4dbad553887b962cb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -16793,7 +16793,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 1
+  OutOfControl: 2
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -16994,7 +16994,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 1
+  OutOfControl: 2
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -17195,7 +17195,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 0
+  OutOfControl: 0.1
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -23070,7 +23070,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 0
+  OutOfControl: 0.1
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -27158,7 +27158,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 0
+  OutOfControl: 0.1
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
@@ -27458,7 +27458,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9476572b18e5cfb4dbad553887b962cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -192.83
+      value: -193.61
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9476572b18e5cfb4dbad553887b962cb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -27523,7 +27523,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   Speed: 45
-  OutOfControl: 1
+  OutOfControl: 2
   CenterOnDash: 0
   AlignToDash: 0
   Additive: 0
