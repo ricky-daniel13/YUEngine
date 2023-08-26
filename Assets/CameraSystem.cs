@@ -21,7 +21,7 @@ public class CameraSystem : MonoBehaviour
     bool userDinFov = false;
     bool userLookAhead = false;
     bool userLookAheadCam = false;
-    public float rightMargin;
+    public float rightMargin, cameraWait;
     public Rect AlignRight(Rect rect)
     {
         rect.x = Screen.width - rect.width - rect.x;
@@ -32,7 +32,7 @@ public class CameraSystem : MonoBehaviour
 
     void OnGUI()
     {
-        GUI.Box(AlignRight(new Rect(0, 20, 205, 180)), "");
+        GUI.Box(AlignRight(new Rect(0, 20, 205, 250)), "");
         GUI.Label(AlignRight(new Rect(45, 25, 100, 25)), "Angulo de vision");
         userFov = GUI.HorizontalSlider(AlignRight(new Rect(45, 50, 100, 25)), userFov, 40.0f, 70.0f);
         GUI.Label(AlignRight(new Rect(5, 45, 35, 25)), userFov.ToString("F02"));
@@ -40,9 +40,27 @@ public class CameraSystem : MonoBehaviour
         userDinFov = GUI.Toggle(AlignRight(new Rect(5, 75, 145, 25)), userDinFov, "Angulo dinamico?");
         userLookAhead = GUI.Toggle(AlignRight(new Rect(10, 100, 180, 25)), userLookAhead, "Apuntar adelante de Sonic?");
         userLookAheadCam = GUI.Toggle(AlignRight(new Rect(10, 125, 180, 25)), userLookAheadCam, "Centrar delante de Sonic?");
-        GUI.Label(AlignRight(new Rect(45, 150, 100, 25)), "Estabilizacion");
+        GUI.Label(AlignRight(new Rect(1.5f, 150, 200, 25)), "Estabilizacion de giro de camara");
         userLocal = GUI.HorizontalSlider(AlignRight(new Rect(45, 175, 100, 25)), userLocal, 0.5f, 0.95f);
         GUI.Label(AlignRight(new Rect(5, 170, 35, 25)), userLocal.ToString("F02"));
+        GUI.Label(AlignRight(new Rect(1.5f, 200, 200, 25)), "Retardo de apuntado de camara");
+        lookHorSpeed = GUI.HorizontalSlider(AlignRight(new Rect(45, 225, 100, 25)), lookHorSpeed, 0f, 0.5f);
+        GUI.Label(AlignRight(new Rect(5, 225, 35, 25)), lookHorSpeed.ToString("F02"));
+
+        if(GUI.Button(AlignRight(new Rect(75, 250, 65, 25)), "Estilo 1"))
+        {
+            userLookAhead = false;
+            userLookAheadCam = false;
+            userLocal = 0.90f;
+            lookHorSpeed = 0.15f;
+        }
+        if (GUI.Button(AlignRight(new Rect(5, 250, 65, 25)), "Estilo 2"))
+        {
+            userLookAhead = true;
+            userLookAheadCam = false;
+            userLocal = 0.5f;
+            lookHorSpeed = 0.35f;
+        }
     }
     private void Start()
     {
@@ -125,7 +143,7 @@ public class CameraSystem : MonoBehaviour
         {
             stopLocalFollow = 1;
         }
-        cam.transform.position += Vector3.Lerp(groundVelocity, Vector3.Project(groundVelocity * userLocal, cam.transform.right), stopLocalFollow) * Time.deltaTime;
+        cam.transform.position += Vector3.Lerp(groundVelocity, groundVelocity * userLocal, stopLocalFollow) * Time.deltaTime;
 
         cam.transform.position += player.physPly.ConnDiff;
 
@@ -313,6 +331,7 @@ public class CameraSystem : MonoBehaviour
 
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         GUIStyle STYLE = new GUIStyle();
@@ -320,6 +339,5 @@ public class CameraSystem : MonoBehaviour
 
         Handles.Label(player.transform.position + cam.transform.right, cameraState, STYLE);
     }
-
-
+#endif
 }

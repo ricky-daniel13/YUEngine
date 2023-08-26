@@ -308,7 +308,8 @@ namespace YU2.Splines
 
 		}
 
-        private void OnDrawGizmos()
+#if UNITY_EDITOR
+		private void OnDrawGizmos()
         {
 			Vector3 p0 = transform.TransformPoint(GetControlPoint(0, BezierKind.Point));
 			for (int i = 0; i < CurveCount; i += 1)
@@ -320,5 +321,6 @@ namespace YU2.Splines
 				p0 = p3;
 			}
 		}
-    }
+#endif
+	}
 }
