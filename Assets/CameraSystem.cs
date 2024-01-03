@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraSystem : MonoBehaviour
 {
@@ -60,6 +61,15 @@ public class CameraSystem : MonoBehaviour
             userLookAheadCam = false;
             userLocal = 0.5f;
             lookHorSpeed = 0.35f;
+        }
+
+        if (GUI.Button(AlignRight(new Rect(75, 275, 65, 25)), "Nivel 1"))
+        {
+            SceneManager.LoadScene(0);
+        }
+        if (GUI.Button(AlignRight(new Rect(5, 275, 65, 25)), "Nivel 2"))
+        {
+            SceneManager.LoadScene(1);
         }
     }
     private void Start()

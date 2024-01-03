@@ -441,7 +441,7 @@ namespace YU2
                         transform.position+=projectionVector;
                 }
             }
-            Debug.Log("Connection: " + ((ConnBody) ? "yes" : "no" ) + ",prev: " + ((prevConnBody) ? "yes" : "no"));
+            //Debug.Log("Connection: " + ((ConnBody) ? "yes" : "no" ) + ",prev: " + ((prevConnBody) ? "yes" : "no"));
         }
 
 
